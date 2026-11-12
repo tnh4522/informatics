@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <radialGradient id="mindBg" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#1D4ED8" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#0F141C"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#mindBg)"/>
+
+  <!-- Connector Filaments -->
+  <path d="M400 225 L195 110 M400 225 L605 110 M400 225 L195 340 M400 225 L605 340" stroke="#3B82F6" stroke-width="3" stroke-dasharray="6 4"/>
+
+  <!-- Center Core Hub -->
+  <g transform="translate(295, 165)">
+    <rect width="210" height="120" rx="8" fill="#1D4ED8" stroke="#93C5FD" stroke-width="2.5"/>
+    <text x="105" y="42" text-anchor="middle" fill="#DBEAFE" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700">TIN HỌC 10 · BÀI 1</text>
+    <text x="105" y="68" text-anchor="middle" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="16" font-weight="700">THÔNG TIN &amp;</text>
+    <text x="105" y="90" text-anchor="middle" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="16" font-weight="700">XỬ LÍ THÔNG TIN</text>
+  </g>
+
+  <!-- Node 1: Thong tin vs Du lieu -->
+  <g transform="translate(52, 52)">
+    <rect width="246" height="106" rx="6" fill="#1C2431" stroke="#60A5FA" stroke-width="2"/>
+    <text x="20" y="34" fill="#93C5FD" font-family="'Be Vietnam Pro', sans-serif" font-size="14" font-weight="700">1. Thông tin &amp; Dữ liệu</text>
+    <text x="20" y="58" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="12">• Quy trình: Thu nhận → Xử lí → Xuất</text>
+    <text x="20" y="78" fill="#CBD5E1" font-family="'Be Vietnam Pro', sans-serif" font-size="12">• Độc lập tương đối &amp; Toàn vẹn</text>
+  </g>
+
+  <!-- Node 2: Don vi do du lieu -->
+  <g transform="translate(502, 52)">
+    <rect width="246" height="106" rx="6" fill="#1C2431" stroke="#FBBF24" stroke-width="2"/>
+    <text x="20" y="34" fill="#FDE68A" font-family="'Be Vietnam Pro', sans-serif" font-size="14" font-weight="700">2. Đơn vị đo dữ liệu</text>
+    <text x="20" y="58" fill="#FAF8F3" font-family="'JetBrains Mono', monospace" font-size="12">• 1 Byte = 8 bit (0 / 1)</text>
+    <text x="20" y="78" fill="#CBD5E1" font-family="'JetBrains Mono', monospace" font-size="12">• B → KB → MB → GB → TB (×1024)</text>
+  </g>
+
+  <!-- Node 3: Thiet bi so -->
+  <g transform="translate(52, 292)">
+    <rect width="246" height="106" rx="6" fill="#1C2431" stroke="#34D399" stroke-width="2"/>
+    <text x="20" y="34" fill="#A7F3D0" font-family="'Be Vietnam Pro', sans-serif" font-size="14" font-weight="700">3. Ưu việt Thiết bị số</text>
+    <text x="20" y="58" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="12">• Lưu trữ gọn (2000 sách / 97,66 GB)</text>
+    <text x="20" y="78" fill="#CBD5E1" font-family="'Be Vietnam Pro', sans-serif" font-size="12">• Xử lí nhanh, truyền tức thì</text>
+  </g>
+
+  <!-- Node 4: Van dung thuc tien -->
+  <g transform="translate(502, 292)">
+    <rect width="246" height="106" rx="6" fill="#1C2431" stroke="#60A5FA" stroke-width="2"/>
+    <text x="20" y="34" fill="#BFDBFE" font-family="'Be Vietnam Pro', sans-serif" font-size="14" font-weight="700">4. Vận dụng thực tiễn</text>
+    <text x="20" y="58" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="12">• CCCD gắn chip, QR, Thẻ 16 GB</text>
+    <text x="20" y="78" fill="#CBD5E1" font-family="'Be Vietnam Pro', sans-serif" font-size="12">• Sẵn sàng kiểm tra 5 câu Quiz</text>
+  </g>
+</svg>

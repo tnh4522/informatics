@@ -1,0 +1,104 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" fill="none">
+  <defs>
+    <radialGradient id="bgGlow" cx="50%" cy="48%" r="58%">
+      <stop offset="0%" stop-color="#1E3A8A" stop-opacity="0.45"/>
+      <stop offset="65%" stop-color="#141A23" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#0F141C"/>
+    </radialGradient>
+    <linearGradient id="cobaltGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399"/>
+      <stop offset="100%" stop-color="#15803D"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="450" fill="url(#bgGlow)"/>
+
+  <!-- Subtle architectural blueprint grid -->
+  <g stroke="#2C384B" stroke-width="1" opacity="0.4">
+    <path d="M80 0 V450 M160 0 V450 M240 0 V450 M320 0 V450 M400 0 V450 M480 0 V450 M560 0 V450 M640 0 V450 M720 0 V450"/>
+    <path d="M0 90 H800 M0 180 H800 M0 270 H800 M0 360 H800"/>
+  </g>
+
+  <!-- Isometric Desk Platform -->
+  <path d="M120 330 L400 415 L680 330 L400 245 Z" fill="#1C2431" stroke="#334155" stroke-width="2"/>
+  <path d="M120 330 L400 415 L400 427 L120 342 Z" fill="#0F141C" stroke="#2C384B"/>
+  <path d="M680 330 L400 415 L400 427 L680 342 Z" fill="#141A23" stroke="#2C384B"/>
+
+  <!-- Left: Open Informatics Textbook (Birch Paper Tone) -->
+  <g transform="translate(175, 238)">
+    <path d="M0 44 L85 72 L152 46 L68 18 Z" fill="#D5CFC0"/>
+    <path d="M4 38 L83 64 L83 18 L4 -4 Z" fill="#FAF8F3" stroke="#D5CFC0" stroke-width="1.5"/>
+    <path d="M83 64 L148 39 L148 -7 L83 18 Z" fill="#F4F1EA" stroke="#D5CFC0" stroke-width="1.5"/>
+    <line x1="83" y1="18" x2="83" y2="64" stroke="#94A3B8" stroke-width="1.5"/>
+    <!-- Book lines & diagram -->
+    <line x1="16" y1="10" x2="68" y2="27" stroke="#1D4ED8" stroke-width="3" stroke-linecap="round"/>
+    <line x1="16" y1="22" x2="64" y2="38" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+    <line x1="16" y1="31" x2="54" y2="44" stroke="#64748B" stroke-width="2" stroke-linecap="round"/>
+    <rect x="96" y="14" width="38" height="20" rx="2" fill="#1D4ED8" opacity="0.2" transform="skewY(-19)"/>
+    <text x="15" y="6" fill="#1D4ED8" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" transform="skewY(18)">TIN HỌC 10</text>
+  </g>
+
+  <!-- Center: Laptop with Binary & Data Stream -->
+  <g transform="translate(310, 128)">
+    <!-- Screen stand / base -->
+    <path d="M22 150 L164 150 L204 192 L-14 192 Z" fill="#334155" stroke="#475569" stroke-width="1.5"/>
+    <path d="M18 160 L158 160 L176 178 L4 178 Z" fill="#141A23"/>
+    <!-- Monitor Lid -->
+    <rect x="14" y="14" width="158" height="134" rx="6" fill="#0F141C" stroke="#60A5FA" stroke-width="2"/>
+    <rect x="24" y="24" width="138" height="114" rx="3" fill="#141A23"/>
+    <!-- Screen Visuals: Binary Matrix & Signal Bars -->
+    <text x="34" y="46" fill="#93C5FD" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600">01001001 01001110</text>
+    <text x="34" y="62" fill="#60A5FA" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="600">10110010 11000101</text>
+    <!-- Chart inside laptop -->
+    <rect x="34" y="76" width="22" height="46" rx="2" fill="url(#cobaltGrad)"/>
+    <rect x="64" y="92" width="22" height="30" rx="2" fill="url(#emeraldGrad)"/>
+    <rect x="94" y="68" width="22" height="54" rx="2" fill="url(#amberGrad)"/>
+    <rect x="124" y="84" width="24" height="38" rx="2" fill="#3B82F6" opacity="0.7"/>
+  </g>
+
+  <!-- Right Floating Hub: Microchip CPU & Knowledge Nodes -->
+  <g transform="translate(530, 155)">
+    <!-- Connection arcs -->
+    <path d="M-38 58 C -12 58, -10 40, 20 40" stroke="#3B82F6" stroke-width="2.5" stroke-dasharray="5 4"/>
+    <!-- CPU Chip -->
+    <rect x="20" y="12" width="84" height="84" rx="8" fill="#1C2431" stroke="#FBBF24" stroke-width="2"/>
+    <rect x="36" y="28" width="52" height="52" rx="4" fill="url(#amberGrad)" opacity="0.2" stroke="#F59E0B" stroke-width="1.5"/>
+    <!-- CPU Pins -->
+    <g stroke="#FBBF24" stroke-width="2.5" stroke-linecap="round">
+      <line x1="38" y1="2" x2="38" y2="12"/><line x1="54" y1="2" x2="54" y2="12"/><line x1="70" y1="2" x2="70" y2="12"/><line x1="86" y1="2" x2="86" y2="12"/>
+      <line x1="38" y1="96" x2="38" y2="106"/><line x1="54" y1="96" x2="54" y2="106"/><line x1="70" y1="96" x2="70" y2="106"/><line x1="86" y1="96" x2="86" y2="106"/>
+      <line x1="10" y1="30" x2="20" y2="30"/><line x1="10" y1="54" x2="20" y2="54"/><line x1="10" y1="78" x2="20" y2="78"/>
+      <line x1="104" y1="30" x2="114" y2="30"/><line x1="104" y1="54" x2="114" y2="54"/><line x1="104" y1="78" x2="114" y2="78"/>
+    </g>
+    <text x="62" y="59" text-anchor="middle" fill="#FDE68A" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700">CPU</text>
+  </g>
+
+  <!-- Floating Knowledge Badges Top -->
+  <g transform="translate(118, 84)">
+    <rect width="142" height="44" rx="4" fill="#1C2431" stroke="#3B82F6" stroke-width="1.5"/>
+    <circle cx="22" cy="22" r="10" fill="url(#cobaltGrad)"/>
+    <path d="M18 22 L21 25 L27 19" stroke="#FAF8F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="42" y="20" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="12" font-weight="700">Thông tin</text>
+    <text x="42" y="34" fill="#93C5FD" font-family="'JetBrains Mono', monospace" font-size="10">Bit · Byte · Dữ liệu</text>
+  </g>
+
+  <g transform="translate(534, 62)">
+    <rect width="156" height="44" rx="4" fill="#1C2431" stroke="#10B981" stroke-width="1.5"/>
+    <circle cx="22" cy="22" r="10" fill="url(#emeraldGrad)"/>
+    <rect x="17" y="17" width="10" height="10" rx="1.5" stroke="#FAF8F3" stroke-width="1.5"/>
+    <text x="42" y="20" fill="#FAF8F3" font-family="'Be Vietnam Pro', sans-serif" font-size="12" font-weight="700">Thiết bị số</text>
+    <text x="42" y="34" fill="#A7F3D0" font-family="'JetBrains Mono', monospace" font-size="10">Xử lí &amp; Lưu trữ</text>
+  </g>
+
+  <!-- Connecting Top Flows -->
+  <path d="M260 106 C 310 106, 330 120, 355 140" stroke="#60A5FA" stroke-width="2" stroke-dasharray="4 4"/>
+  <path d="M534 84 C 490 84, 470 112, 465 140" stroke="#34D399" stroke-width="2" stroke-dasharray="4 4"/>
+</svg>
