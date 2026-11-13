@@ -169,8 +169,8 @@ export default function SlideInteractiveLab({
   isFullscreen = false,
   onJumpToSlide,
 }: SlideInteractiveLabProps) {
-  const boxCls = `mt-2.5 rounded-sm border border-[#2C384B] bg-[#141A23] ${
-    isFullscreen ? "p-3.5" : "p-3"
+  const boxCls = `rounded-sm border border-[#2C384B] bg-[#141A23] ${
+    isFullscreen ? "mt-0 p-2.5 sm:p-3" : "mt-2.5 p-3"
   }`;
   const labelCls = isFullscreen ? "text-base" : "text-sm";
   const bodyCls = isFullscreen ? "text-base" : "text-sm";
@@ -1303,7 +1303,13 @@ export default function SlideInteractiveLab({
           </div>
         </div>
 
-        <div className="mt-2.5 space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
+        <div
+          className={`overflow-y-auto pr-1 ${
+            isFullscreen
+              ? "mt-2 space-y-2 max-h-[165px]"
+              : "mt-2.5 space-y-2.5 max-h-[260px]"
+          }`}
+        >
           {LESSON_1_QUIZ_QUESTIONS.map((q, qIdx) => {
             const chosen = quizAnswers[q.id];
             const hasChosen = chosen !== undefined;

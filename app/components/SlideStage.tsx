@@ -374,14 +374,16 @@ export default function SlideStage({
 
       {/* Main Slide Canvas OR Overview Grid */}
       <div
-        className={`flex-1 overflow-y-auto ${
+        className={`flex-1 min-h-0 ${
           isFullscreen
-            ? `px-2.5 sm:px-4 lg:px-5 pt-2 sm:pt-2.5 ${
+            ? `${
+                isGridOpen ? "overflow-y-auto" : "overflow-y-auto md:overflow-hidden"
+              } px-2.5 sm:px-4 pt-1.5 sm:pt-2 ${
                 narration.isActive && narration.showCaptions
-                  ? "pb-24 sm:pb-20"
-                  : "pb-12"
+                  ? "pb-20 sm:pb-[78px]"
+                  : "pb-11"
               } bg-[#141A23] flex flex-col`
-            : "p-2.5 sm:p-3.5 min-h-[460px] bg-[#1C2431]"
+            : "overflow-y-auto p-2.5 sm:p-3.5 min-h-[460px] bg-[#1C2431]"
         }`}
       >
         {isGridOpen ? (
@@ -459,204 +461,208 @@ export default function SlideStage({
         ) : (
           <div
             key={activeSlide.code}
-            className="slide-settle w-full max-w-none flex flex-col justify-between gap-2.5"
+            className={`slide-settle w-full max-w-none flex flex-col ${
+              isFullscreen ? "flex-1 min-h-0" : "justify-between gap-2.5"
+            }`}
           >
             {/* Slide Live Narration Caption Bar (chỉ hiện trong chế độ thường khi đang thuyết minh) */}
             {!isFullscreen && narration.isActive && narration.showCaptions && (
               <LiveCaptionCard narration={narration} className="mb-1" />
             )}
 
-            {/* Slide Heading Banner trải toàn bộ chiều ngang + Cặp chia Ý chính / Hình minh họa lớn */}
-            <div>
-              <div className="w-full">
-                <h2
-                  className={`${
-                    isFullscreen
-                      ? "text-3xl sm:text-4xl"
-                      : "text-2xl sm:text-3xl"
-                  } font-bold text-[#FAF8F3] leading-tight`}
-                >
-                  {activeSlide.title}
-                </h2>
-                <p
-                  className={
-                    isFullscreen
-                      ? "mt-1.5 text-base sm:text-lg text-[#CBD5E1] leading-snug"
-                      : "mt-1 text-base text-[#CBD5E1] leading-snug"
-                  }
-                >
-                  {activeSlide.subtitle}
-                </p>
-              </div>
+            {/* Tiêu đề & mô tả slide trải toàn bộ chiều ngang */}
+            <div className="shrink-0 w-full">
+              <h2 className="text-2xl sm:text-3xl font-bold text-[#FAF8F3] leading-tight">
+                {activeSlide.title}
+              </h2>
+              <p
+                className={
+                  isFullscreen
+                    ? "mt-0.5 text-sm sm:text-base text-[#CBD5E1] leading-snug"
+                    : "mt-1 text-base text-[#CBD5E1] leading-snug"
+                }
+              >
+                {activeSlide.subtitle}
+              </p>
+            </div>
 
-              {/* Balanced Split: Left Key Points + Knowledge Box | Right Large 16:9 Illustration */}
+            {/* Khung nội dung chia 2 cột: Trái (Ý chính + Kiến thức + Bài tập SGK) | Phải (Hình minh họa lớn + Lab trong chế độ toàn màn hình) */}
+            <div
+              className={`grid grid-cols-1 md:grid-cols-12 ${
+                isFullscreen
+                  ? "flex-1 min-h-0 mt-2 gap-3 items-stretch"
+                  : "mt-2.5 gap-3 items-start"
+              }`}
+            >
+              {/* Cột trái: Ý chính + Kiến thức trọng tâm + Bài tập SGK */}
               <div
-                className={`mt-3 grid grid-cols-1 md:grid-cols-12 items-start ${
-                  isFullscreen ? "gap-3.5 lg:gap-4" : "gap-3"
+                className={`md:col-span-5 flex flex-col gap-2 ${
+                  isFullscreen ? "min-h-0 md:overflow-y-auto md:pr-0.5" : ""
                 }`}
               >
-                <div className="md:col-span-5 flex flex-col gap-2.5">
-                  <div className="grid grid-cols-1 gap-2.5">
-                    {activeSlide.keyPoints.map((kp, idx) => (
-                      <div
-                        key={idx}
-                        className={`rounded-sm border border-[#2C384B] flex flex-col justify-between gap-2 ${
-                          isFullscreen
-                            ? "bg-[#1C2431] p-3.5"
-                            : "bg-[#141A23]/90 p-3"
-                        }`}
-                      >
-                        <div>
-                          <h3
-                            className={`font-bold text-[#FAF8F3] ${
-                              isFullscreen ? "text-lg" : "text-base"
-                            }`}
-                          >
-                            {kp.heading}
-                          </h3>
-                          <p
-                            className={`mt-1 leading-relaxed text-[#CBD5E1] ${
-                              isFullscreen ? "text-base" : "text-sm"
-                            }`}
-                          >
-                            {kp.body}
-                          </p>
-                        </div>
-                        {kp.formulaOrCode && (
-                          <div
-                            className={`mt-0.5 rounded-sm border border-[#2C384B] bg-[#0F141C] px-2.5 py-1.5 font-mono text-[#93C5FD] tabular-data break-words ${
-                              isFullscreen ? "text-sm" : "text-xs sm:text-sm"
-                            }`}
-                          >
-                            {kp.formulaOrCode}
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Textbook Knowledge Box (when present) */}
-                  {activeSlide.knowledgeBox && (
-                    <div className="rounded-sm border border-[#3B82F6]/45 bg-[#172554]/55 p-3 sm:p-3.5">
-                      <div
-                        className={`font-bold text-[#BFDBFE] ${
-                          isFullscreen ? "text-base" : "text-sm sm:text-base"
-                        }`}
-                      >
-                        {activeSlide.knowledgeBox.title}
-                      </div>
-                      <ul
-                        className={`mt-1.5 space-y-1 text-[#EFF6FF] ${
-                          isFullscreen ? "text-sm sm:text-base" : "text-sm"
-                        }`}
-                      >
-                        {activeSlide.knowledgeBox.bullets.map((b, i) => (
-                          <li key={i} className="leading-relaxed">
-                            • {b}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
-
-                <figure
-                  className={`md:col-span-7 rounded-sm border border-[#2C384B] overflow-hidden ${
-                    isFullscreen ? "bg-[#0F141C]" : "bg-[#141A23]"
-                  }`}
-                >
-                  <button
-                    type="button"
-                    onClick={() => setZoomedSlideCode(activeSlide.code)}
-                    aria-label={`Phóng to hình minh họa: ${activeSlide.imageCaption}`}
-                    className="group relative block w-full aspect-video bg-[#0F141C] overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6]"
-                  >
-                    <Image
-                      src={activeSlide.imageUrl}
-                      alt={activeSlide.imageCaption}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 58vw"
-                      unoptimized
-                      priority
-                      className="object-cover transition-transform duration-200 group-hover:scale-[1.015]"
-                    />
-                    <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1 rounded-sm border border-[#2C384B] bg-[#0F141C]/90 px-2.5 py-1 text-xs font-semibold text-[#FAF8F3] group-hover:border-[#3B82F6]">
-                      <ZoomInIcon className="w-3.5 h-3.5 text-[#93C5FD]" />
-                      <span>Phóng to</span>
-                    </span>
-                  </button>
-                  <figcaption
-                    className={`px-3 py-2 border-t border-[#2C384B] text-[#CBD5E1] leading-snug ${
-                      isFullscreen
-                        ? "bg-[#0F141C] text-sm"
-                        : "bg-[#141A23] text-xs sm:text-sm"
-                    }`}
-                  >
-                    {activeSlide.imageCaption}
-                  </figcaption>
-                </figure>
-              </div>
-
-              {/* Textbook Task & Revealable Answer (when present) */}
-              {activeSlide.textbookTask && (
-                <div
-                  className={`mt-3 rounded-sm border border-[#16A34A]/45 ${
-                    isFullscreen ? "bg-[#1C2431] p-3.5" : "bg-[#141A23] p-3"
-                  }`}
-                >
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="flex items-center gap-2">
-                      <span className="px-2 py-0.5 rounded-sm bg-[#15803D] text-xs font-semibold text-[#FAF8F3]">
-                        {activeSlide.textbookTask.badge}
-                      </span>
-                      <span className="font-mono text-xs sm:text-sm text-[#86EFAC]">
-                        {activeSlide.textbookTask.page}
-                      </span>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => toggleSolution(activeSlide.code)}
-                      className="text-xs sm:text-sm font-semibold text-[#93C5FD] hover:underline"
-                    >
-                      {isSolutionOpen
-                        ? "Ẩn gợi ý lời giải"
-                        : "Xem gợi ý lời giải SGK"}
-                    </button>
-                  </div>
-                  <p
-                    className={`mt-1.5 font-medium text-[#FAF8F3] leading-relaxed ${
-                      isFullscreen ? "text-base" : "text-sm sm:text-base"
-                    }`}
-                  >
-                    {activeSlide.textbookTask.prompt}
-                  </p>
-                  {isSolutionOpen && (
+                <div className="grid grid-cols-1 gap-2">
+                  {activeSlide.keyPoints.map((kp, idx) => (
                     <div
-                      className={`mt-2 pt-2 border-t border-[#2C384B] space-y-1.5 text-[#DCFCE7] ${
-                        isFullscreen ? "text-sm sm:text-base" : "text-sm"
+                      key={idx}
+                      className={`rounded-sm border border-[#2C384B] flex flex-col justify-between gap-1.5 ${
+                        isFullscreen
+                          ? "bg-[#1C2431] p-2.5 sm:p-3"
+                          : "bg-[#141A23]/90 p-3"
                       }`}
                     >
-                      {activeSlide.textbookTask.solutionSteps.map((step, i) => (
-                        <div key={i} className="flex items-start gap-2">
-                          <CheckCircleIcon className="w-4 h-4 text-[#4ADE80] shrink-0 mt-0.5" />
-                          <span>{step}</span>
-                        </div>
-                      ))}
-                      <div className="pt-1 font-semibold text-[#86EFAC]">
-                        Kết luận: {activeSlide.textbookTask.conclusion}
+                      <div>
+                        <h3 className="text-base sm:text-lg font-bold text-[#FAF8F3] leading-snug">
+                          {kp.heading}
+                        </h3>
+                        <p className="mt-0.5 text-sm sm:text-base leading-snug text-[#CBD5E1]">
+                          {kp.body}
+                        </p>
                       </div>
+                      {kp.formulaOrCode && (
+                        <div className="mt-0.5 rounded-sm border border-[#2C384B] bg-[#0F141C] px-2.5 py-1 font-mono text-xs sm:text-sm text-[#93C5FD] tabular-data break-words">
+                          {kp.formulaOrCode}
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ))}
                 </div>
-              )}
 
-              {/* Live Slide-Embedded Interactive Lab */}
+                {/* Textbook Knowledge Box (when present) */}
+                {activeSlide.knowledgeBox && (
+                  <div className="rounded-sm border border-[#3B82F6]/45 bg-[#172554]/55 p-2.5 sm:p-3">
+                    <div className="text-sm sm:text-base font-bold text-[#BFDBFE]">
+                      {activeSlide.knowledgeBox.title}
+                    </div>
+                    <ul className="mt-1 space-y-0.5 text-sm text-[#EFF6FF]">
+                      {activeSlide.knowledgeBox.bullets.map((b, i) => (
+                        <li key={i} className="leading-snug">
+                          • {b}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Textbook Task & Revealable Answer (placed in left column so page fits 100vh without vertical scroll) */}
+                {activeSlide.textbookTask && (
+                  <div
+                    className={`rounded-sm border border-[#16A34A]/45 ${
+                      isFullscreen
+                        ? "bg-[#1C2431] p-2.5 sm:p-3"
+                        : "bg-[#141A23] p-3"
+                    }`}
+                  >
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="px-2 py-0.5 rounded-sm bg-[#15803D] text-xs font-semibold text-[#FAF8F3]">
+                          {activeSlide.textbookTask.badge}
+                        </span>
+                        <span className="font-mono text-xs sm:text-sm text-[#86EFAC]">
+                          {activeSlide.textbookTask.page}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => toggleSolution(activeSlide.code)}
+                        className="text-xs sm:text-sm font-semibold text-[#93C5FD] hover:underline"
+                      >
+                        {isSolutionOpen
+                          ? "Ẩn gợi ý lời giải"
+                          : "Xem gợi ý lời giải SGK"}
+                      </button>
+                    </div>
+                    <p className="mt-1 text-sm sm:text-base font-medium text-[#FAF8F3] leading-snug">
+                      {activeSlide.textbookTask.prompt}
+                    </p>
+                    {isSolutionOpen && (
+                      <div className="mt-2 pt-2 border-t border-[#2C384B] space-y-1 text-xs sm:text-sm text-[#DCFCE7]">
+                        {activeSlide.textbookTask.solutionSteps.map((step, i) => (
+                          <div key={i} className="flex items-start gap-2">
+                            <CheckCircleIcon className="w-4 h-4 text-[#4ADE80] shrink-0 mt-0.5" />
+                            <span>{step}</span>
+                          </div>
+                        ))}
+                        <div className="pt-0.5 font-semibold text-[#86EFAC]">
+                          Kết luận: {activeSlide.textbookTask.conclusion}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              {/* Cột phải: Hình minh họa lớn (tự co giãn vừa 1 màn hình trong chế độ toàn màn hình) + Lab tương tác */}
+              <div
+                className={`md:col-span-7 flex flex-col gap-2 ${
+                  isFullscreen ? "min-h-0 overflow-hidden" : ""
+                }`}
+              >
+                <div
+                  className={
+                    isFullscreen
+                      ? "flex-1 min-h-[160px] flex flex-col justify-center overflow-hidden"
+                      : ""
+                  }
+                >
+                  <figure
+                    className={`w-full flex flex-col rounded-sm border border-[#2C384B] overflow-hidden ${
+                      isFullscreen ? "max-h-full bg-[#0F141C]" : "bg-[#141A23]"
+                    }`}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => setZoomedSlideCode(activeSlide.code)}
+                      aria-label={`Phóng to hình minh họa: ${activeSlide.imageCaption}`}
+                      className={`group relative block w-full aspect-video bg-[#0F141C] overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#3B82F6] ${
+                        isFullscreen ? "shrink min-h-0" : ""
+                      }`}
+                    >
+                      <Image
+                        src={activeSlide.imageUrl}
+                        alt={activeSlide.imageCaption}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 58vw"
+                        unoptimized
+                        priority
+                        className={`${
+                          isFullscreen ? "object-contain" : "object-cover"
+                        } transition-transform duration-200 group-hover:scale-[1.015]`}
+                      />
+                      <span className="absolute right-2.5 bottom-2.5 inline-flex items-center gap-1 rounded-sm border border-[#2C384B] bg-[#0F141C]/90 px-2.5 py-1 text-xs font-semibold text-[#FAF8F3] group-hover:border-[#3B82F6]">
+                        <ZoomInIcon className="w-3.5 h-3.5 text-[#93C5FD]" />
+                        <span>Phóng to</span>
+                      </span>
+                    </button>
+                    <figcaption
+                      className={`shrink-0 px-3 py-1.5 border-t border-[#2C384B] text-xs sm:text-sm text-[#CBD5E1] leading-snug ${
+                        isFullscreen ? "bg-[#0F141C]" : "bg-[#141A23]"
+                      }`}
+                    >
+                      {activeSlide.imageCaption}
+                    </figcaption>
+                  </figure>
+                </div>
+
+                {isFullscreen && activeSlide.interactiveWidget && (
+                  <div className="shrink-0">
+                    <SlideInteractiveLab
+                      widgetType={activeSlide.interactiveWidget}
+                      isFullscreen
+                      onJumpToSlide={(idx) => onSelectSlide(idx)}
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Live Slide-Embedded Interactive Lab (full-width below split in normal mode) */}
+            {!isFullscreen && activeSlide.interactiveWidget && (
               <SlideInteractiveLab
                 widgetType={activeSlide.interactiveWidget}
-                isFullscreen={isFullscreen}
+                isFullscreen={false}
                 onJumpToSlide={(idx) => onSelectSlide(idx)}
               />
-            </div>
+            )}
           </div>
         )}
       </div>
