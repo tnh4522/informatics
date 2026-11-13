@@ -276,32 +276,50 @@ export default function SlideInteractiveLab({
     ];
     return (
       <div className={boxCls}>
-        <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+        <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-[#2C384B]">
           <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Bản đồ 20 Slide theo tiến trình chuẩn SGK Kết nối tri thức
           </span>
-          <span className={`font-mono text-[#93C5FD] tabular-data ${subCls}`}>
+          <span className={`font-mono text-[#93C5FD] tabular-data shrink-0 ${subCls}`}>
             04 Chặng · 20 Slide
           </span>
         </div>
-        <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div
+          className={`mt-2 grid gap-1.5 ${
+            isFullscreen
+              ? "grid-cols-2 sm:grid-cols-4"
+              : "grid-cols-1 sm:grid-cols-2 gap-2"
+          }`}
+        >
           {sections.map((sec) => (
             <button
               key={sec.part}
               type="button"
               onClick={() => onJumpToSlide?.(sec.slideIdx)}
-              className="group text-left rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] hover:bg-[#1E2A3B] px-3 py-2 transition-colors"
+              className={`group text-left rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] hover:bg-[#1E2A3B] transition-colors ${
+                isFullscreen ? "px-2.5 py-1.5" : "px-3 py-2"
+              }`}
             >
-              <div className="flex items-center justify-between gap-2">
-                <span className={`font-mono text-[#93C5FD] tabular-data ${subCls}`}>
+              <div className="flex items-center justify-between gap-1">
+                <span className={`font-mono text-[#93C5FD] tabular-data truncate ${isFullscreen ? "text-xs" : subCls}`}>
                   {sec.part}
                 </span>
-                <ArrowRightIcon className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#93C5FD] transition-colors" />
+                <ArrowRightIcon className="w-3.5 h-3.5 shrink-0 text-[#94A3B8] group-hover:text-[#93C5FD] transition-colors" />
               </div>
-              <div className={`mt-1 font-semibold text-[#FAF8F3] ${emphasisCls}`}>
+              <div
+                className={`mt-0.5 font-semibold text-[#FAF8F3] leading-snug ${
+                  isFullscreen ? "text-sm sm:text-base" : emphasisCls
+                }`}
+              >
                 {sec.label}
               </div>
-              <div className={`mt-0.5 text-[#94A3B8] ${subCls}`}>{sec.detail}</div>
+              <div
+                className={`mt-0.5 text-[#94A3B8] leading-snug ${
+                  isFullscreen ? "text-xs line-clamp-2" : subCls
+                }`}
+              >
+                {sec.detail}
+              </div>
             </button>
           ))}
         </div>
@@ -314,7 +332,7 @@ export default function SlideInteractiveLab({
     const cleanChars = Array.from((warmupText || "TIN").slice(0, 6));
     return (
       <div className={boxCls}>
-        <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <label
             htmlFor="warmup-input"
             className={`font-semibold text-[#CBD5E1] ${labelCls}`}
@@ -328,29 +346,29 @@ export default function SlideInteractiveLab({
             value={warmupText}
             onChange={(e) => setWarmupText(e.target.value)}
             placeholder="TIN 10"
-            className={`w-36 rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1 font-mono text-[#FAF8F3] focus:border-[#3B82F6] ${bodyCls}`}
+            className={`w-32 rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1 font-mono text-[#FAF8F3] focus:border-[#3B82F6] ${bodyCls}`}
           />
         </div>
-        <div className="mt-2.5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+        <div className="mt-2 grid grid-cols-3 sm:grid-cols-6 gap-1.5">
           {cleanChars.map((ch, idx) => {
             const code = ch.charCodeAt(0);
             const bitsStr = code.toString(2).padStart(8, "0");
             return (
               <div
                 key={`${ch}-${idx}`}
-                className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 text-center"
+                className="rounded-sm border border-[#2C384B] bg-[#1C2431] px-1 py-1.5 text-center"
               >
                 <div className={`font-bold text-[#FAF8F3] ${emphasisCls}`}>
                   {ch === " " ? "Space" : ch}
                 </div>
-                <div className={`mt-1 font-mono text-[#93C5FD] tabular-data ${subCls}`}>
+                <div className="mt-0.5 font-mono text-xs tracking-tighter text-[#93C5FD] tabular-data">
                   {bitsStr}
                 </div>
               </div>
             );
           })}
         </div>
-        <div className={`mt-2 text-[#CBD5E1] ${bodyCls}`}>
+        <div className={`mt-2 text-[#CBD5E1] leading-snug ${bodyCls}`}>
           Con người đọc ra nghĩa (<strong className="text-[#FAF8F3]">Thông tin</strong>), còn bộ nhớ máy tính chỉ lưu giữ các chuỗi 0 và 1 (<strong className="text-[#93C5FD]">Dữ liệu</strong>).
         </div>
       </div>
@@ -362,7 +380,7 @@ export default function SlideInteractiveLab({
     const scenario = PIPELINE_SCENARIOS[pipelineIdx];
     return (
       <div className={boxCls}>
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-1.5 border-b border-[#2C384B]">
           <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Mô phỏng Sơ đồ Hình 1.1 — Chọn tình huống:
           </span>
@@ -383,28 +401,28 @@ export default function SlideInteractiveLab({
             ))}
           </div>
         </div>
-        <div className="mt-2.5 grid grid-cols-1 md:grid-cols-3 gap-2.5">
-          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
+        <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
+          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 sm:p-2.5">
             <div className={`font-mono text-[#93C5FD] ${subCls}`}>
               01 · Tiếp nhận dữ liệu
             </div>
-            <p className={`mt-1 leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
+            <p className={`mt-1 leading-snug text-[#FAF8F3] ${bodyCls}`}>
               {scenario.input}
             </p>
           </div>
-          <div className="rounded-sm border border-[#2563EB]/60 bg-[#172554]/50 p-3">
+          <div className="rounded-sm border border-[#2563EB]/60 bg-[#172554]/50 p-2 sm:p-2.5">
             <div className={`font-mono text-[#FCD34D] ${subCls}`}>
               02 · Xử lí dữ liệu
             </div>
-            <p className={`mt-1 leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
+            <p className={`mt-1 leading-snug text-[#FAF8F3] ${bodyCls}`}>
               {scenario.process}
             </p>
           </div>
-          <div className="rounded-sm border border-[#15803D]/70 bg-[#052E16]/50 p-3">
+          <div className="rounded-sm border border-[#15803D]/70 bg-[#052E16]/50 p-2 sm:p-2.5">
             <div className={`font-mono text-[#86EFAC] ${subCls}`}>
               03 · Đưa ra kết quả
             </div>
-            <p className={`mt-1 leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
+            <p className={`mt-1 leading-snug text-[#FAF8F3] ${bodyCls}`}>
               {scenario.output}
             </p>
           </div>
@@ -924,13 +942,13 @@ export default function SlideInteractiveLab({
     const pair = DEVICE_PAIRS[devicePairIdx];
     return (
       <div className={boxCls}>
-        <div className="flex flex-wrap gap-2 pb-2 border-b border-[#2C384B]">
+        <div className="flex flex-wrap gap-1.5 pb-1.5 border-b border-[#2C384B]">
           {DEVICE_PAIRS.map((p, idx) => (
             <button
               key={p.id}
               type="button"
               onClick={() => setDevicePairIdx(idx)}
-              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
+              className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${subCls} ${
                 devicePairIdx === idx
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -940,18 +958,18 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 ${bodyCls}`}>
-          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
+        <div className={`mt-2 grid grid-cols-1 sm:grid-cols-3 gap-2 ${bodyCls}`}>
+          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 sm:p-2.5">
             <div className="font-semibold text-[#93C5FD]">Điểm giống nhau</div>
-            <p className="mt-1 text-[#FAF8F3] leading-relaxed">{pair.common}</p>
+            <p className="mt-0.5 text-[#FAF8F3] leading-snug">{pair.common}</p>
           </div>
-          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
+          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 sm:p-2.5">
             <div className="font-semibold text-[#FCD34D]">Thiết bị thường</div>
-            <p className="mt-1 text-[#CBD5E1] leading-relaxed">{pair.manual}</p>
+            <p className="mt-0.5 text-[#CBD5E1] leading-snug">{pair.manual}</p>
           </div>
-          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-3">
+          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-2 sm:p-2.5">
             <div className="font-semibold text-[#86EFAC]">Thiết bị số</div>
-            <p className="mt-1 text-[#FAF8F3] leading-relaxed">{pair.digital}</p>
+            <p className="mt-0.5 text-[#FAF8F3] leading-snug">{pair.digital}</p>
           </div>
         </div>
       </div>
@@ -963,13 +981,13 @@ export default function SlideInteractiveLab({
     const active = COMPARISON_ASPECTS.find((a) => a.id === compAspect)!;
     return (
       <div className={boxCls}>
-        <div className="flex flex-wrap gap-2 pb-2 border-b border-[#2C384B]">
+        <div className="flex flex-wrap gap-1.5 pb-1.5 border-b border-[#2C384B]">
           {COMPARISON_ASPECTS.map((a) => (
             <button
               key={a.id}
               type="button"
               onClick={() => setCompAspect(a.id)}
-              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
+              className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${subCls} ${
                 compAspect === a.id
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -979,22 +997,22 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-3 ${bodyCls}`}>
-          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
+        <div className={`mt-2 grid grid-cols-1 sm:grid-cols-2 gap-2 ${bodyCls}`}>
+          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 sm:p-2.5">
             <div className="font-semibold text-[#FCD34D]">
               {active.manualTitle}
             </div>
-            <ul className="mt-1.5 space-y-1 text-[#CBD5E1]">
+            <ul className="mt-1 space-y-0.5 text-[#CBD5E1] leading-snug">
               {active.manualPoints.map((pt, i) => (
                 <li key={i}>• {pt}</li>
               ))}
             </ul>
           </div>
-          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-3">
+          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-2 sm:p-2.5">
             <div className="font-semibold text-[#86EFAC]">
               {active.digitalTitle}
             </div>
-            <ul className="mt-1.5 space-y-1 text-[#FAF8F3]">
+            <ul className="mt-1 space-y-0.5 text-[#FAF8F3] leading-snug">
               {active.digitalPoints.map((pt, i) => (
                 <li key={i}>• {pt}</li>
               ))}
@@ -1306,7 +1324,7 @@ export default function SlideInteractiveLab({
         <div
           className={`overflow-y-auto pr-1 ${
             isFullscreen
-              ? "mt-2 space-y-2 max-h-[165px]"
+              ? "mt-2 space-y-2 max-h-[140px]"
               : "mt-2.5 space-y-2.5 max-h-[260px]"
           }`}
         >
