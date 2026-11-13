@@ -213,7 +213,7 @@ export default function SlideStage({
       <div
         className={`flex-1 overflow-y-auto ${
           isFullscreen
-            ? "px-6 sm:px-10 lg:px-14 xl:px-20 py-5 sm:py-8 bg-[#141A23] flex flex-col"
+            ? "px-6 sm:px-10 lg:px-14 xl:px-20 pt-5 sm:pt-7 pb-16 bg-[#141A23] flex flex-col"
             : "p-4 sm:p-6 min-h-[460px] bg-[#1C2431]"
         }`}
       >
@@ -512,7 +512,7 @@ export default function SlideStage({
       {isFullscreen && !isGridOpen && !isLightboxOpen && (
         <div
           aria-label="Điều khiển nhanh chế độ toàn màn hình"
-          className="fixed bottom-3 right-4 z-40 rounded-sm border border-[#2C384B] bg-[#0F141C]/90 px-1.5 py-1 flex items-center gap-1 text-xs opacity-45 hover:opacity-100 focus-within:opacity-100 transition-opacity"
+          className="fixed bottom-3 right-4 z-40 rounded-sm border border-[#334155] bg-[#0F141C] px-1.5 py-1 flex items-center gap-1 text-xs"
         >
           <button
             type="button"
