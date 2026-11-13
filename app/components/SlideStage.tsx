@@ -97,122 +97,128 @@ export default function SlideStage({
       aria-label="Sân khấu trình chiếu Slide tương tác"
       className={
         isFullscreen
-          ? "fixed inset-0 z-50 flex flex-col bg-[#0F141C] text-[#FAF8F3] p-3 sm:p-5"
+          ? "fixed inset-0 z-50 w-screen h-screen flex flex-col bg-[#141A23] text-[#FAF8F3] overflow-hidden"
           : "flex flex-col rounded-sm border border-[#2C384B] bg-[#141A23] text-[#FAF8F3] overflow-hidden"
       }
     >
-      {/* Top Stage Telemetry & Control Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-[#2C384B] bg-[#141A23]">
-        <div className="flex flex-wrap items-center gap-2 min-w-0">
-          <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#1D4ED8] text-[#FAF8F3] tabular-data">
-            {activeSlide.code}
-          </span>
-          <span
-            className={`text-[11px] font-semibold px-2 py-0.5 rounded-sm border ${kindInfo.className}`}
-          >
-            {kindInfo.label}
-          </span>
-          <span className="text-xs font-medium text-[#CBD5E1] truncate">
-            {activeSlide.sectionLabel}
-          </span>
-        </div>
+      {/* Top Stage Telemetry & Control Bar (ẩn hoàn toàn khi vào toàn màn hình) */}
+      {!isFullscreen && (
+        <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 border-b border-[#2C384B] bg-[#141A23]">
+          <div className="flex flex-wrap items-center gap-2 min-w-0">
+            <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded-sm bg-[#1D4ED8] text-[#FAF8F3] tabular-data">
+              {activeSlide.code}
+            </span>
+            <span
+              className={`text-[11px] font-semibold px-2 py-0.5 rounded-sm border ${kindInfo.className}`}
+            >
+              {kindInfo.label}
+            </span>
+            <span className="text-xs font-medium text-[#CBD5E1] truncate">
+              {activeSlide.sectionLabel}
+            </span>
+          </div>
 
-        <div className="flex items-center gap-2 shrink-0">
-          <button
-            type="button"
-            onClick={() => setZoomedSlideCode(activeSlide.code)}
-            className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-[#93C5FD] px-2 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] hover:text-[#FAF8F3] transition-colors"
-          >
-            <ImageIcon className="w-3.5 h-3.5" />
-            <span>Phóng to ảnh</span>
-          </button>
-          <button
-            type="button"
-            onClick={onToggleGrid}
-            aria-pressed={isGridOpen}
-            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border text-xs font-semibold transition-colors ${
-              isGridOpen
-                ? "border-[#3B82F6] bg-[#1D4ED8] text-[#FAF8F3]"
-                : "border-[#2C384B] bg-[#1C2431] text-[#CBD5E1] hover:border-[#475569] hover:text-[#FAF8F3]"
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => setZoomedSlideCode(activeSlide.code)}
+              className="hidden sm:inline-flex items-center gap-1 text-[11px] font-semibold text-[#93C5FD] px-2 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] hover:text-[#FAF8F3] transition-colors"
+            >
+              <ImageIcon className="w-3.5 h-3.5" />
+              <span>Phóng to ảnh</span>
+            </button>
+            <button
+              type="button"
+              onClick={onToggleGrid}
+              aria-pressed={isGridOpen}
+              className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border text-xs font-semibold transition-colors ${
+                isGridOpen
+                  ? "border-[#3B82F6] bg-[#1D4ED8] text-[#FAF8F3]"
+                  : "border-[#2C384B] bg-[#1C2431] text-[#CBD5E1] hover:border-[#475569] hover:text-[#FAF8F3]"
+              }`}
+            >
+              <GridViewIcon className="w-3.5 h-3.5" />
+              <span>{totalSlides} Slide</span>
+            </button>
+            <button
+              type="button"
+              onClick={onToggleFullscreen}
+              aria-label={
+                isFullscreen
+                  ? "Thoát chế độ trình chiếu toàn màn hình"
+                  : "Mở chế độ trình chiếu toàn màn hình"
+              }
+              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] text-xs font-semibold text-[#CBD5E1] hover:border-[#475569] hover:text-[#FAF8F3] transition-colors"
+            >
+              {isFullscreen ? (
+                <>
+                  <CollapseStageIcon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Thu gọn</span>
+                </>
+              ) : (
+                <>
+                  <ExpandStageIcon className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">Toàn màn hình</span>
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Calibrated Single-Rail Timeline (ẩn trong chế độ toàn màn hình để tối đa diện tích trình chiếu) */}
+      {!isFullscreen && (
+        <div
+          aria-label="Thanh tiến trình từng slide"
+          className="px-4 py-2 border-b border-[#2C384B] bg-[#11161E]"
+        >
+          <div
+            className={`grid gap-1 ${
+              totalSlides >= 12
+                ? "grid-cols-10 sm:grid-cols-20"
+                : "grid-cols-6"
             }`}
           >
-            <GridViewIcon className="w-3.5 h-3.5" />
-            <span>{totalSlides} Slide</span>
-          </button>
-          <button
-            type="button"
-            onClick={onToggleFullscreen}
-            aria-label={
-              isFullscreen
-                ? "Thoát chế độ trình chiếu toàn màn hình"
-                : "Mở chế độ trình chiếu toàn màn hình"
-            }
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] text-xs font-semibold text-[#CBD5E1] hover:border-[#475569] hover:text-[#FAF8F3] transition-colors"
-          >
-            {isFullscreen ? (
-              <>
-                <CollapseStageIcon className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Thu gọn</span>
-              </>
-            ) : (
-              <>
-                <ExpandStageIcon className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">Toàn màn hình</span>
-              </>
-            )}
-          </button>
+            {activeDeck.slides.map((s, idx) => {
+              const isActive = idx === slideIndex;
+              const isVisited = idx < slideIndex;
+              return (
+                <button
+                  key={s.code}
+                  type="button"
+                  title={`Slide ${s.id}: ${s.title}`}
+                  aria-label={`Chuyển đến Slide ${s.id}: ${s.title}`}
+                  aria-current={isActive ? "step" : undefined}
+                  onClick={() => {
+                    onSelectSlide(idx);
+                    if (isGridOpen) onToggleGrid();
+                  }}
+                  className={`h-6 rounded-sm font-mono text-[11px] font-semibold tabular-data transition-colors border ${
+                    isActive
+                      ? "bg-[#1D4ED8] border-[#60A5FA] text-[#FAF8F3]"
+                      : isVisited
+                      ? "bg-[#1E293B] border-[#334155] text-[#93C5FD] hover:border-[#3B82F6]"
+                      : "bg-[#141A23] border-[#2C384B] text-[#94A3B8] hover:border-[#475569] hover:text-[#FAF8F3]"
+                  }`}
+                >
+                  {String(s.id).padStart(2, "0")}
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
-
-      {/* Calibrated Single-Rail Timeline (all ticks accessible at a glance) */}
-      <div
-        aria-label="Thanh tiến trình từng slide"
-        className="px-4 py-2 border-b border-[#2C384B] bg-[#11161E]"
-      >
-        <div
-          className={`grid gap-1 ${
-            totalSlides >= 12
-              ? "grid-cols-10 sm:grid-cols-20"
-              : "grid-cols-6"
-          }`}
-        >
-          {activeDeck.slides.map((s, idx) => {
-            const isActive = idx === slideIndex;
-            const isVisited = idx < slideIndex;
-            return (
-              <button
-                key={s.code}
-                type="button"
-                title={`Slide ${s.id}: ${s.title}`}
-                aria-label={`Chuyển đến Slide ${s.id}: ${s.title}`}
-                aria-current={isActive ? "step" : undefined}
-                onClick={() => {
-                  onSelectSlide(idx);
-                  if (isGridOpen) onToggleGrid();
-                }}
-                className={`h-6 rounded-sm font-mono text-[11px] font-semibold tabular-data transition-colors border ${
-                  isActive
-                    ? "bg-[#1D4ED8] border-[#60A5FA] text-[#FAF8F3]"
-                    : isVisited
-                    ? "bg-[#1E293B] border-[#334155] text-[#93C5FD] hover:border-[#3B82F6]"
-                    : "bg-[#141A23] border-[#2C384B] text-[#94A3B8] hover:border-[#475569] hover:text-[#FAF8F3]"
-                }`}
-              >
-                {String(s.id).padStart(2, "0")}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      )}
 
       {/* Main Slide Canvas OR Overview Grid */}
       <div
         className={`flex-1 overflow-y-auto ${
-          isFullscreen ? "p-4 sm:p-8" : "p-4 sm:p-6 min-h-[460px]"
-        } bg-[#1C2431]`}
+          isFullscreen
+            ? "px-6 sm:px-10 lg:px-14 xl:px-20 py-5 sm:py-8 bg-[#141A23] flex flex-col"
+            : "p-4 sm:p-6 min-h-[460px] bg-[#1C2431]"
+        }`}
       >
         {isGridOpen ? (
-          <div className="space-y-4">
+          <div className="w-full space-y-4">
             <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
               <h2 className="text-base sm:text-lg font-bold text-[#FAF8F3]">
                 Tổng quan toàn bộ {totalSlides} Slide — {activeDeck.title}
@@ -226,7 +232,13 @@ export default function SlideStage({
                 Đóng lưới
               </button>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">
+            <div
+              className={`grid gap-2.5 ${
+                isFullscreen
+                  ? "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+                  : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-4"
+              }`}
+            >
               {activeDeck.slides.map((s, idx) => {
                 const isActive = idx === slideIndex;
                 const badge = KIND_BADGE_MAP[s.kind];
@@ -245,14 +257,14 @@ export default function SlideStage({
                     }`}
                   >
                     <div className="space-y-2">
-                      <div className="aspect-video w-full rounded-sm overflow-hidden border border-[#2C384B] bg-[#0F141C]">
+                      <div className="relative aspect-video w-full rounded-sm overflow-hidden border border-[#2C384B] bg-[#0F141C]">
                         <Image
                           src={s.imageUrl}
                           alt={s.imageCaption}
-                          width={800}
-                          height={450}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                           unoptimized
-                          className="w-full h-full object-cover"
+                          className="object-cover"
                         />
                       </div>
                       <div className="flex items-center justify-between gap-1.5">
@@ -280,12 +292,24 @@ export default function SlideStage({
         ) : (
           <div
             key={activeSlide.code}
-            className="slide-settle max-w-4xl mx-auto flex flex-col justify-between"
+            className={
+              isFullscreen
+                ? "slide-settle w-full max-w-none my-auto flex flex-col justify-between gap-4"
+                : "slide-settle max-w-4xl mx-auto flex flex-col justify-between"
+            }
           >
             {/* Slide Heading (No eyebrow/kicker directly above heading) */}
             <div>
-              <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-start">
-                <div className="md:col-span-7">
+              <div
+                className={`grid grid-cols-1 md:grid-cols-12 items-start ${
+                  isFullscreen ? "gap-5 lg:gap-8" : "gap-4"
+                }`}
+              >
+                <div
+                  className={
+                    isFullscreen ? "md:col-span-7 lg:col-span-8" : "md:col-span-7"
+                  }
+                >
                   <h2
                     className={`${
                       isFullscreen ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl"
@@ -293,12 +317,24 @@ export default function SlideStage({
                   >
                     {activeSlide.title}
                   </h2>
-                  <p className="mt-2 text-sm text-[#CBD5E1] leading-relaxed max-w-[70ch]">
+                  <p
+                    className={
+                      isFullscreen
+                        ? "mt-2.5 text-sm sm:text-base text-[#CBD5E1] leading-relaxed max-w-[85ch]"
+                        : "mt-2 text-sm text-[#CBD5E1] leading-relaxed max-w-[70ch]"
+                    }
+                  >
                     {activeSlide.subtitle}
                   </p>
                 </div>
 
-                <figure className="md:col-span-5 rounded-sm border border-[#2C384B] bg-[#141A23] overflow-hidden">
+                <figure
+                  className={`rounded-sm border border-[#2C384B] overflow-hidden ${
+                    isFullscreen
+                      ? "md:col-span-5 lg:col-span-4 bg-[#0F141C]"
+                      : "md:col-span-5 bg-[#141A23]"
+                  }`}
+                >
                   <button
                     type="button"
                     onClick={() => setZoomedSlideCode(activeSlide.code)}
@@ -308,18 +344,22 @@ export default function SlideStage({
                     <Image
                       src={activeSlide.imageUrl}
                       alt={activeSlide.imageCaption}
-                      width={800}
-                      height={450}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 40vw"
                       unoptimized
                       priority
-                      className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-[1.02]"
+                      className="object-cover transition-transform duration-200 group-hover:scale-[1.02]"
                     />
                     <span className="absolute right-2 bottom-2 inline-flex items-center gap-1 rounded-sm border border-[#2C384B] bg-[#0F141C]/90 px-2 py-0.5 text-[11px] font-semibold text-[#FAF8F3] group-hover:border-[#3B82F6]">
                       <ZoomInIcon className="w-3 h-3 text-[#93C5FD]" />
                       <span>Phóng to</span>
                     </span>
                   </button>
-                  <figcaption className="px-2.5 py-1.5 border-t border-[#2C384B] bg-[#141A23] text-[11px] text-[#CBD5E1] leading-snug">
+                  <figcaption
+                    className={`px-2.5 py-1.5 border-t border-[#2C384B] text-[11px] text-[#CBD5E1] leading-snug ${
+                      isFullscreen ? "bg-[#0F141C]" : "bg-[#141A23]"
+                    }`}
+                  >
                     {activeSlide.imageCaption}
                   </figcaption>
                 </figure>
@@ -338,7 +378,9 @@ export default function SlideStage({
                 {activeSlide.keyPoints.map((kp, idx) => (
                   <div
                     key={idx}
-                    className="rounded-sm border border-[#2C384B] bg-[#141A23]/90 p-3.5 flex flex-col justify-between gap-2"
+                    className={`rounded-sm border border-[#2C384B] flex flex-col justify-between gap-2 ${
+                      isFullscreen ? "bg-[#1C2431] p-4" : "bg-[#141A23]/90 p-3.5"
+                    }`}
                   >
                     <div>
                       <h3 className="text-sm font-bold text-[#FAF8F3]">
@@ -375,7 +417,11 @@ export default function SlideStage({
 
               {/* Textbook Task & Revealable Answer (when present) */}
               {activeSlide.textbookTask && (
-                <div className="mt-4 rounded-sm border border-[#16A34A]/45 bg-[#141A23] p-3.5">
+                <div
+                  className={`mt-4 rounded-sm border border-[#16A34A]/45 ${
+                    isFullscreen ? "bg-[#1C2431] p-4" : "bg-[#141A23] p-3.5"
+                  }`}
+                >
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <span className="px-2 py-0.5 rounded-sm bg-[#15803D] text-[11px] font-semibold text-[#FAF8F3]">
@@ -424,41 +470,89 @@ export default function SlideStage({
         )}
       </div>
 
-      {/* Bottom Keyboard Transport Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-t border-[#2C384B] bg-[#141A23]">
-        <button
-          type="button"
-          onClick={onPrevSlide}
-          disabled={slideIndex === 0}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#2C384B] bg-[#1C2431] text-xs font-semibold text-[#FAF8F3] hover:border-[#475569] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-        >
-          <ChevronLeftIcon className="w-4 h-4" />
-          <span>Slide trước</span>
-        </button>
+      {/* Bottom Keyboard Transport Bar (ẩn trong toàn màn hình để nội dung trình chiếu chiếm trọn khung) */}
+      {!isFullscreen && (
+        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 border-t border-[#2C384B] bg-[#141A23]">
+          <button
+            type="button"
+            onClick={onPrevSlide}
+            disabled={slideIndex === 0}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-sm border border-[#2C384B] bg-[#1C2431] text-xs font-semibold text-[#FAF8F3] hover:border-[#475569] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeftIcon className="w-4 h-4" />
+            <span>Slide trước</span>
+          </button>
 
-        <div
-          aria-live="polite"
-          className="flex items-center gap-3 text-xs text-[#CBD5E1]"
-        >
-          <span className="font-mono font-semibold text-[#FAF8F3] tabular-data">
-            Slide {String(slideIndex + 1).padStart(2, "0")} /{" "}
-            {String(totalSlides).padStart(2, "0")}
-          </span>
-          <span className="hidden md:inline text-[#94A3B8]">
-            Phím tắt: Mũi tên trái/phải, F (toàn màn hình), G (lưới slide)
-          </span>
+          <div
+            aria-live="polite"
+            className="flex items-center gap-3 text-xs text-[#CBD5E1]"
+          >
+            <span className="font-mono font-semibold text-[#FAF8F3] tabular-data">
+              Slide {String(slideIndex + 1).padStart(2, "0")} /{" "}
+              {String(totalSlides).padStart(2, "0")}
+            </span>
+            <span className="hidden md:inline text-[#94A3B8]">
+              Phím tắt: Mũi tên trái/phải, F (toàn màn hình), G (lưới slide)
+            </span>
+          </div>
+
+          <button
+            type="button"
+            onClick={onNextSlide}
+            disabled={slideIndex === totalSlides - 1}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#1D4ED8] hover:bg-[#1E40AF] text-xs font-semibold text-[#FAF8F3] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          >
+            <span>Slide tiếp theo</span>
+            <ChevronRightIcon className="w-4 h-4" />
+          </button>
         </div>
+      )}
 
-        <button
-          type="button"
-          onClick={onNextSlide}
-          disabled={slideIndex === totalSlides - 1}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-sm bg-[#1D4ED8] hover:bg-[#1E40AF] text-xs font-semibold text-[#FAF8F3] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+      {/* Cụm điều khiển nổi tối giản góc dưới-phải khi đang trình chiếu Toàn màn hình */}
+      {isFullscreen && !isGridOpen && !isLightboxOpen && (
+        <div
+          aria-label="Điều khiển nhanh chế độ toàn màn hình"
+          className="fixed bottom-3 right-4 z-40 rounded-sm border border-[#2C384B] bg-[#0F141C]/90 px-1.5 py-1 flex items-center gap-1 text-xs opacity-45 hover:opacity-100 focus-within:opacity-100 transition-opacity"
         >
-          <span>Slide tiếp theo</span>
-          <ChevronRightIcon className="w-4 h-4" />
-        </button>
-      </div>
+          <button
+            type="button"
+            onClick={onPrevSlide}
+            disabled={slideIndex === 0}
+            aria-label="Slide trước"
+            className="p-1.5 rounded-sm text-[#CBD5E1] hover:bg-[#1C2431] hover:text-[#FAF8F3] disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeftIcon className="w-4 h-4" />
+          </button>
+          <button
+            type="button"
+            onClick={onToggleGrid}
+            aria-label={`Mở lưới ${totalSlides} slide`}
+            className="px-2 py-1 rounded-sm font-mono text-[11px] font-semibold text-[#FAF8F3] hover:bg-[#1C2431] tabular-data transition-colors"
+          >
+            {String(slideIndex + 1).padStart(2, "0")} /{" "}
+            {String(totalSlides).padStart(2, "0")}
+          </button>
+          <button
+            type="button"
+            onClick={onNextSlide}
+            disabled={slideIndex === totalSlides - 1}
+            aria-label="Slide tiếp theo"
+            className="p-1.5 rounded-sm text-[#CBD5E1] hover:bg-[#1C2431] hover:text-[#FAF8F3] disabled:opacity-35 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronRightIcon className="w-4 h-4" />
+          </button>
+          <span aria-hidden="true" className="w-px h-4 bg-[#2C384B] mx-0.5" />
+          <button
+            type="button"
+            onClick={onToggleFullscreen}
+            aria-label="Thoát chế độ trình chiếu toàn màn hình"
+            className="inline-flex items-center gap-1 px-2 py-1 rounded-sm bg-[#1C2431] border border-[#2C384B] text-[11px] font-semibold text-[#CBD5E1] hover:border-[#475569] hover:text-[#FAF8F3] transition-colors"
+          >
+            <CollapseStageIcon className="w-3.5 h-3.5" />
+            <span>Thu gọn</span>
+          </button>
+        </div>
+      )}
 
       {isLightboxOpen && (
         <div
@@ -491,14 +585,14 @@ export default function SlideStage({
                 <span>Đóng (Esc)</span>
               </button>
             </div>
-            <div className="aspect-video w-full bg-[#0F141C]">
+            <div className="relative aspect-video w-full bg-[#0F141C]">
               <Image
                 src={activeSlide.imageUrl}
                 alt={activeSlide.imageCaption}
-                width={800}
-                height={450}
+                fill
+                sizes="(max-width: 1024px) 100vw, 896px"
                 unoptimized
-                className="w-full h-full object-contain"
+                className="object-contain"
               />
             </div>
             <div className="px-4 py-2.5 border-t border-[#2C384B] bg-[#141A23] flex flex-wrap items-center justify-between gap-2">

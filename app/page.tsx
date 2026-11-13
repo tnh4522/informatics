@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   MULTI_GRADE_DECKS,
   SchoolLevel,
@@ -27,6 +27,7 @@ export default function Home() {
   const [isGridOpen, setIsGridOpen] = useState<boolean>(false);
   const [levelFilter, setLevelFilter] = useState<FilterLevel>("all");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const hadNativeFullscreenRef = useRef<boolean>(false);
 
   const activeDeck = useMemo(
     () =>
@@ -60,6 +61,52 @@ export default function Home() {
     );
   }, [activeDeck.slides.length]);
 
+  const enterFullscreen = useCallback(async () => {
+    setIsFullscreen(true);
+    if (typeof document !== "undefined" && !document.fullscreenElement) {
+      try {
+        await document.documentElement.requestFullscreen();
+      } catch {
+        // Giữ chế độ toàn màn hình CSS nếu trình duyệt không cho phép Fullscreen API
+      }
+    }
+  }, []);
+
+  const exitFullscreen = useCallback(async () => {
+    setIsFullscreen(false);
+    if (typeof document !== "undefined" && document.fullscreenElement) {
+      try {
+        await document.exitFullscreen();
+      } catch {
+        // Bỏ qua nếu đã thoát toàn màn hình
+      }
+    }
+  }, []);
+
+  const handleToggleFullscreen = useCallback(() => {
+    if (isFullscreen) {
+      void exitFullscreen();
+    } else {
+      void enterFullscreen();
+    }
+  }, [enterFullscreen, exitFullscreen, isFullscreen]);
+
+  useEffect(() => {
+    const onFullscreenChange = () => {
+      const nativeActive = Boolean(document.fullscreenElement);
+      if (nativeActive) {
+        hadNativeFullscreenRef.current = true;
+        setIsFullscreen(true);
+      } else if (hadNativeFullscreenRef.current) {
+        hadNativeFullscreenRef.current = false;
+        setIsFullscreen(false);
+      }
+    };
+    document.addEventListener("fullscreenchange", onFullscreenChange);
+    return () =>
+      document.removeEventListener("fullscreenchange", onFullscreenChange);
+  }, []);
+
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       const target = e.target as HTMLElement | null;
@@ -73,30 +120,40 @@ export default function Home() {
         return;
       }
 
-      if (e.key === "ArrowRight") {
+      if (e.key === "ArrowRight" || e.key === "PageDown") {
         e.preventDefault();
         handleNextSlide();
-      } else if (e.key === "ArrowLeft") {
+      } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
         e.preventDefault();
         handlePrevSlide();
       } else if (e.key === "f" || e.key === "F") {
         e.preventDefault();
-        setIsFullscreen((prev) => !prev);
+        handleToggleFullscreen();
       } else if (e.key === "g" || e.key === "G") {
         e.preventDefault();
         setIsGridOpen((prev) => !prev);
       } else if (e.key === "Escape") {
+        if (document.querySelector('[role="dialog"]')) {
+          return;
+        }
         if (isGridOpen) {
           setIsGridOpen(false);
         } else if (isFullscreen) {
-          setIsFullscreen(false);
+          void exitFullscreen();
         }
       }
     };
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [handleNextSlide, handlePrevSlide, isFullscreen, isGridOpen]);
+  }, [
+    exitFullscreen,
+    handleNextSlide,
+    handlePrevSlide,
+    handleToggleFullscreen,
+    isFullscreen,
+    isGridOpen,
+  ]);
 
   const filteredDecks = useMemo(() => {
     const q = searchQuery.trim().toLowerCase();
@@ -120,9 +177,21 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#F4F1EA] text-[#141A23]">
+    <div
+      className={
+        isFullscreen
+          ? "h-screen overflow-hidden bg-[#141A23] text-[#FAF8F3]"
+          : "min-h-screen flex flex-col bg-[#F4F1EA] text-[#141A23]"
+      }
+    >
       {/* Top Catalog Header Bar */}
-      <header className="sticky top-0 z-30 border-b border-[#D5CFC0] bg-[#FAF8F3]">
+      <header
+        className={
+          isFullscreen
+            ? "hidden"
+            : "sticky top-0 z-30 border-b border-[#D5CFC0] bg-[#FAF8F3]"
+        }
+      >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3 min-w-0">
             <div className="w-8 h-8 rounded-sm bg-[#141A23] text-[#FAF8F3] flex items-center justify-center shrink-0">
@@ -185,11 +254,21 @@ export default function Home() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-4 space-y-8">
+      <main
+        className={
+          isFullscreen
+            ? "flex-1 w-full"
+            : "flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-4 space-y-8"
+        }
+      >
         {/* Active Deck Context Strip */}
         <section
           aria-label="Thông tin bài giảng đang mở"
-          className="flex flex-wrap items-center justify-between gap-3 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] px-4 py-2.5"
+          className={
+            isFullscreen
+              ? "hidden"
+              : "flex flex-wrap items-center justify-between gap-3 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] px-4 py-2.5"
+          }
         >
           <div className="flex flex-wrap items-center gap-2.5 min-w-0">
             <span className="px-2 py-0.5 rounded-sm bg-[#1D4ED8] font-mono text-xs font-semibold text-[#FAF8F3] tabular-data">
@@ -214,12 +293,16 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Dual-Pane Split Study Workbench (65% Slide Stage / 35% Lab & Video Notebook) */}
+        {/* Dual-Pane Split Study Workbench (65% Slide Stage / 35% Lab & Study Outline) */}
         <section
           aria-label="Không gian trình chiếu và thực hành đồng bộ"
-          className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
+          className={
+            isFullscreen
+              ? "w-full h-full"
+              : "grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
+          }
         >
-          <div className="lg:col-span-8 flex flex-col">
+          <div className={isFullscreen ? "w-full h-full" : "lg:col-span-8 flex flex-col"}>
             <SlideStage
               activeDeck={activeDeck}
               slideIndex={safeSlideIndex}
@@ -229,12 +312,18 @@ export default function Home() {
               onSelectSlide={(idx) => setSlideIndex(idx)}
               onPrevSlide={handlePrevSlide}
               onNextSlide={handleNextSlide}
-              onToggleFullscreen={() => setIsFullscreen((prev) => !prev)}
+              onToggleFullscreen={handleToggleFullscreen}
               onToggleGrid={() => setIsGridOpen((prev) => !prev)}
             />
           </div>
 
-          <div className="lg:col-span-4 flex flex-col lg:max-h-[720px]">
+          <div
+            className={
+              isFullscreen
+                ? "hidden"
+                : "lg:col-span-4 flex flex-col lg:max-h-[720px]"
+            }
+          >
             <StudyWorkbenchPanel
               activeDeck={activeDeck}
               activeSlide={activeSlide}
@@ -251,7 +340,11 @@ export default function Home() {
         <section
           id="kho-bai-giang"
           aria-label="Kho bài giảng thuyết trình nhiều cấp học"
-          className="rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] overflow-hidden"
+          className={
+            isFullscreen
+              ? "hidden"
+              : "rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] overflow-hidden"
+          }
         >
           <div className="p-4 sm:p-5 border-b border-[#D5CFC0] flex flex-col md:flex-row md:items-center justify-between gap-4 bg-[#ECE7DB]/65">
             <div>
@@ -403,7 +496,9 @@ export default function Home() {
         {/* Reference Cheatsheet: Bảng 1.1 & Quick Index of Bài 1 Tin học 10 Exercises */}
         <section
           aria-label="Tài liệu tra cứu nhanh Tin học 10 Bài 1"
-          className="grid grid-cols-1 lg:grid-cols-12 gap-4"
+          className={
+            isFullscreen ? "hidden" : "grid grid-cols-1 lg:grid-cols-12 gap-4"
+          }
         >
           {/* Bảng 1.1 Storage Units */}
           <div className="lg:col-span-7 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] overflow-hidden">
@@ -538,7 +633,13 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="mt-8 border-t border-[#D5CFC0] bg-[#FAF8F3]">
+      <footer
+        className={
+          isFullscreen
+            ? "hidden"
+            : "mt-8 border-t border-[#D5CFC0] bg-[#FAF8F3]"
+        }
+      >
         <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4 flex flex-wrap items-center justify-between gap-3 text-xs text-[#3E4856]">
           <div>
             Kho Thuyết Trình Tin Học Phổ Thông (Tiểu học · THCS · THPT) — Định hướng Kết nối tri thức với cuộc sống (SGK Mới 2026)

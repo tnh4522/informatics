@@ -155,14 +155,14 @@ export default function StudyWorkbenchPanel({
           <div className="space-y-3.5">
             {/* Current Slide Visual Preview & Notes */}
             <div className="rounded-sm border border-[#D5CFC0] bg-[#FFFFFF] overflow-hidden">
-              <div className="aspect-video w-full bg-[#141A23] overflow-hidden border-b border-[#D5CFC0]">
+              <div className="relative aspect-video w-full bg-[#141A23] overflow-hidden border-b border-[#D5CFC0]">
                 <Image
                   src={activeSlide.imageUrl}
                   alt={activeSlide.imageCaption}
-                  width={800}
-                  height={450}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 400px"
                   unoptimized
-                  className="w-full h-full object-cover"
+                  className="object-cover"
                 />
               </div>
               <div className="p-3 space-y-1.5">
@@ -209,14 +209,16 @@ export default function StudyWorkbenchPanel({
                             : "text-[#3E4856] hover:bg-[#ECE7DB]"
                         }`}
                       >
-                        <Image
-                          src={chap.imageUrl}
-                          alt={chap.label}
-                          width={160}
-                          height={90}
-                          unoptimized
-                          className="w-12 h-7 rounded-sm object-cover border border-[#D5CFC0] bg-[#141A23] shrink-0"
-                        />
+                        <div className="relative w-12 h-7 rounded-sm overflow-hidden border border-[#D5CFC0] bg-[#141A23] shrink-0">
+                          <Image
+                            src={chap.imageUrl}
+                            alt={chap.label}
+                            fill
+                            sizes="48px"
+                            unoptimized
+                            className="object-cover"
+                          />
+                        </div>
                         <div className="min-w-0 flex-1">
                           <div className="truncate">{chap.label}</div>
                           <div className="font-mono text-[10px] opacity-80 tabular-data">
@@ -247,14 +249,16 @@ export default function StudyWorkbenchPanel({
                             : "text-[#3E4856] hover:bg-[#ECE7DB]"
                         }`}
                       >
-                        <Image
-                          src={s.imageUrl}
-                          alt={s.title}
-                          width={160}
-                          height={90}
-                          unoptimized
-                          className="w-12 h-7 rounded-sm object-cover border border-[#D5CFC0] bg-[#141A23] shrink-0"
-                        />
+                        <div className="relative w-12 h-7 rounded-sm overflow-hidden border border-[#D5CFC0] bg-[#141A23] shrink-0">
+                          <Image
+                            src={s.imageUrl}
+                            alt={s.title}
+                            fill
+                            sizes="48px"
+                            unoptimized
+                            className="object-cover"
+                          />
+                        </div>
                         <div className="min-w-0 flex-1">
                           <div className="truncate">{s.title}</div>
                           <div className="font-mono text-[10px] opacity-80 tabular-data">
