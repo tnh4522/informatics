@@ -14,6 +14,7 @@ import {
 
 interface SlideInteractiveLabProps {
   widgetType?: InteractiveWidgetKind;
+  isFullscreen?: boolean;
   onJumpToSlide?: (slideIndex: number) => void;
 }
 
@@ -165,8 +166,17 @@ const COMPARISON_ASPECTS = [
 
 export default function SlideInteractiveLab({
   widgetType,
+  isFullscreen = false,
   onJumpToSlide,
 }: SlideInteractiveLabProps) {
+  const boxCls = `mt-2.5 rounded-sm border border-[#2C384B] bg-[#141A23] ${
+    isFullscreen ? "p-3.5" : "p-3"
+  }`;
+  const labelCls = isFullscreen ? "text-base" : "text-sm";
+  const bodyCls = isFullscreen ? "text-base" : "text-sm";
+  const subCls = isFullscreen ? "text-sm" : "text-xs sm:text-sm";
+  const emphasisCls = isFullscreen ? "text-lg" : "text-base";
+
   // Slide 2: Warmup text -> bits
   const [warmupText, setWarmupText] = useState("TIN 10");
 
@@ -265,33 +275,33 @@ export default function SlideInteractiveLab({
       },
     ];
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
-          <span className="text-xs font-semibold text-[#CBD5E1]">
+      <div className={boxCls}>
+        <div className="flex items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+          <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Bản đồ 20 Slide theo tiến trình chuẩn SGK Kết nối tri thức
           </span>
-          <span className="font-mono text-[11px] text-[#93C5FD] tabular-data">
+          <span className={`font-mono text-[#93C5FD] tabular-data ${subCls}`}>
             04 Chặng · 20 Slide
           </span>
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+        <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-2">
           {sections.map((sec) => (
             <button
               key={sec.part}
               type="button"
               onClick={() => onJumpToSlide?.(sec.slideIdx)}
-              className="group text-left rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] hover:bg-[#1E2A3B] px-3 py-2.5 transition-colors"
+              className="group text-left rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] hover:bg-[#1E2A3B] px-3 py-2 transition-colors"
             >
               <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-[11px] text-[#93C5FD] tabular-data">
+                <span className={`font-mono text-[#93C5FD] tabular-data ${subCls}`}>
                   {sec.part}
                 </span>
                 <ArrowRightIcon className="w-3.5 h-3.5 text-[#94A3B8] group-hover:text-[#93C5FD] transition-colors" />
               </div>
-              <div className="mt-1 text-sm font-semibold text-[#FAF8F3]">
+              <div className={`mt-1 font-semibold text-[#FAF8F3] ${emphasisCls}`}>
                 {sec.label}
               </div>
-              <div className="mt-0.5 text-xs text-[#94A3B8]">{sec.detail}</div>
+              <div className={`mt-0.5 text-[#94A3B8] ${subCls}`}>{sec.detail}</div>
             </button>
           ))}
         </div>
@@ -303,11 +313,11 @@ export default function SlideInteractiveLab({
   if (widgetType === "warmup-bit-reveal") {
     const cleanChars = Array.from((warmupText || "TIN").slice(0, 6));
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
+      <div className={boxCls}>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <label
             htmlFor="warmup-input"
-            className="text-xs font-semibold text-[#CBD5E1]"
+            className={`font-semibold text-[#CBD5E1] ${labelCls}`}
           >
             Thử nhập chữ để xem cách máy tính lưu thành dãy bit (tối đa 6 kí tự):
           </label>
@@ -318,10 +328,10 @@ export default function SlideInteractiveLab({
             value={warmupText}
             onChange={(e) => setWarmupText(e.target.value)}
             placeholder="TIN 10"
-            className="w-32 rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1 font-mono text-xs text-[#FAF8F3] focus:border-[#3B82F6]"
+            className={`w-36 rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1 font-mono text-[#FAF8F3] focus:border-[#3B82F6] ${bodyCls}`}
           />
         </div>
-        <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+        <div className="mt-2.5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
           {cleanChars.map((ch, idx) => {
             const code = ch.charCodeAt(0);
             const bitsStr = code.toString(2).padStart(8, "0");
@@ -330,17 +340,17 @@ export default function SlideInteractiveLab({
                 key={`${ch}-${idx}`}
                 className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 text-center"
               >
-                <div className="text-sm font-bold text-[#FAF8F3]">
+                <div className={`font-bold text-[#FAF8F3] ${emphasisCls}`}>
                   {ch === " " ? "Space" : ch}
                 </div>
-                <div className="mt-1 font-mono text-[11px] text-[#93C5FD] tabular-data">
+                <div className={`mt-1 font-mono text-[#93C5FD] tabular-data ${subCls}`}>
                   {bitsStr}
                 </div>
               </div>
             );
           })}
         </div>
-        <div className="mt-2.5 text-xs text-[#CBD5E1]">
+        <div className={`mt-2 text-[#CBD5E1] ${bodyCls}`}>
           Con người đọc ra nghĩa (<strong className="text-[#FAF8F3]">Thông tin</strong>), còn bộ nhớ máy tính chỉ lưu giữ các chuỗi 0 và 1 (<strong className="text-[#93C5FD]">Dữ liệu</strong>).
         </div>
       </div>
@@ -351,9 +361,9 @@ export default function SlideInteractiveLab({
   if (widgetType === "info-data-pipeline") {
     const scenario = PIPELINE_SCENARIOS[pipelineIdx];
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-[#2C384B]">
-          <span className="text-xs font-semibold text-[#CBD5E1]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
+          <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Mô phỏng Sơ đồ Hình 1.1 — Chọn tình huống:
           </span>
           <div className="flex flex-wrap gap-1.5">
@@ -362,7 +372,7 @@ export default function SlideInteractiveLab({
                 key={item.id}
                 type="button"
                 onClick={() => setPipelineIdx(idx)}
-                className={`px-2.5 py-1 rounded-sm text-xs font-medium transition-colors ${
+                className={`px-2.5 py-1 rounded-sm font-medium transition-colors ${subCls} ${
                   pipelineIdx === idx
                     ? "bg-[#1D4ED8] text-[#FAF8F3]"
                     : "bg-[#1C2431] text-[#CBD5E1] border border-[#2C384B] hover:border-[#475569]"
@@ -373,28 +383,28 @@ export default function SlideInteractiveLab({
             ))}
           </div>
         </div>
-        <div className="mt-3 grid grid-cols-1 md:grid-cols-3 gap-2.5">
+        <div className="mt-2.5 grid grid-cols-1 md:grid-cols-3 gap-2.5">
           <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
-            <div className="font-mono text-[11px] text-[#93C5FD]">
+            <div className={`font-mono text-[#93C5FD] ${subCls}`}>
               01 · Tiếp nhận dữ liệu
             </div>
-            <p className="mt-1.5 text-xs leading-relaxed text-[#FAF8F3]">
+            <p className={`mt-1 leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
               {scenario.input}
             </p>
           </div>
           <div className="rounded-sm border border-[#2563EB]/60 bg-[#172554]/50 p-3">
-            <div className="font-mono text-[11px] text-[#FCD34D]">
+            <div className={`font-mono text-[#FCD34D] ${subCls}`}>
               02 · Xử lí dữ liệu
             </div>
-            <p className="mt-1.5 text-xs leading-relaxed text-[#FAF8F3]">
+            <p className={`mt-1 leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
               {scenario.process}
             </p>
           </div>
           <div className="rounded-sm border border-[#15803D]/70 bg-[#052E16]/50 p-3">
-            <div className="font-mono text-[11px] text-[#86EFAC]">
+            <div className={`font-mono text-[#86EFAC] ${subCls}`}>
               03 · Đưa ra kết quả
             </div>
-            <p className="mt-1.5 text-xs leading-relaxed text-[#FAF8F3]">
+            <p className={`mt-1 leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
               {scenario.output}
             </p>
           </div>
@@ -447,8 +457,8 @@ export default function SlideInteractiveLab({
     ];
     const current = choices.find((c) => c.id === selectedStudent)!;
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="text-xs font-semibold text-[#CBD5E1] mb-2.5">
+      <div className={boxCls}>
+        <div className={`font-semibold text-[#CBD5E1] mb-2 ${labelCls}`}>
           Chọn nhận định để kiểm tra kết luận Hoạt động 1 (Trang 7):
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -457,7 +467,7 @@ export default function SlideInteractiveLab({
               key={c.id}
               type="button"
               onClick={() => setSelectedStudent(c.id)}
-              className={`px-3 py-2 rounded-sm text-left text-xs border transition-colors ${
+              className={`px-3 py-2 rounded-sm text-left border transition-colors ${subCls} ${
                 selectedStudent === c.id
                   ? c.isComplete
                     ? "border-[#16A34A] bg-[#052E16]/70 text-[#DCFCE7]"
@@ -466,14 +476,14 @@ export default function SlideInteractiveLab({
               }`}
             >
               <div className="font-semibold">{c.name}</div>
-              <div className="mt-0.5 text-[11px] opacity-85 line-clamp-1">
+              <div className="mt-0.5 text-xs opacity-85 line-clamp-1">
                 {c.claim}
               </div>
             </button>
           ))}
         </div>
         <div
-          className={`mt-3 rounded-sm border px-3 py-2.5 text-xs leading-relaxed ${
+          className={`mt-2.5 rounded-sm border px-3 py-2 leading-relaxed ${bodyCls} ${
             current.isComplete
               ? "border-[#16A34A]/60 bg-[#052E16]/40 text-[#DCFCE7]"
               : "border-[#D97706]/60 bg-[#451A03]/40 text-[#FEF3C7]"
@@ -511,19 +521,19 @@ export default function SlideInteractiveLab({
     ];
     const active = forms.find((f) => f.id === infoForm)!;
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
-          <span className="text-xs font-semibold text-[#CBD5E1]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+          <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Cùng 1 thông tin &ldquo;Cấm hút thuốc&rdquo; — Chọn dạng dữ liệu biểu diễn:
           </span>
         </div>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-2.5 flex flex-wrap gap-2">
           {forms.map((f) => (
             <button
               key={f.id}
               type="button"
               onClick={() => setInfoForm(f.id)}
-              className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
                 infoForm === f.id
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -533,11 +543,11 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className="mt-3 flex items-center gap-4 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
+        <div className="mt-2.5 flex items-center gap-4 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
           {infoForm === "sign" && (
             <svg
               viewBox="0 0 48 48"
-              className="w-11 h-11 shrink-0"
+              className="w-12 h-12 shrink-0"
               aria-label="Biển báo cấm hút thuốc minh họa"
             >
               <circle
@@ -561,10 +571,10 @@ export default function SlideInteractiveLab({
             </svg>
           )}
           <div>
-            <div className="text-xs font-semibold text-[#93C5FD]">
+            <div className={`font-semibold text-[#93C5FD] ${subCls}`}>
               {active.label}
             </div>
-            <p className="mt-1 text-xs leading-relaxed text-[#FAF8F3] font-mono">
+            <p className={`mt-1 leading-relaxed text-[#FAF8F3] font-mono ${bodyCls}`}>
               {active.content}
             </p>
           </div>
@@ -577,8 +587,8 @@ export default function SlideInteractiveLab({
   if (widgetType === "context-integrity") {
     const active = CONTEXT_MODES.find((m) => m.id === contextId)!;
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="text-xs font-semibold text-[#CBD5E1] mb-2.5">
+      <div className={boxCls}>
+        <div className={`font-semibold text-[#CBD5E1] mb-2 ${labelCls}`}>
           Thử thay đổi ngữ cảnh của dữ liệu &ldquo;08&rdquo; để kiểm tra tính toàn vẹn:
         </div>
         <div className="flex flex-wrap gap-2">
@@ -587,7 +597,7 @@ export default function SlideInteractiveLab({
               key={m.id}
               type="button"
               onClick={() => setContextId(m.id)}
-              className={`px-2.5 py-1.5 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
                 contextId === m.id
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -598,16 +608,16 @@ export default function SlideInteractiveLab({
           ))}
         </div>
         <div
-          className={`mt-3 flex flex-col sm:flex-row sm:items-center gap-3 rounded-sm border p-3 ${
+          className={`mt-2.5 flex flex-col sm:flex-row sm:items-center gap-3 rounded-sm border p-3 ${
             active.status === "warning"
               ? "border-[#D97706]/70 bg-[#451A03]/40"
               : "border-[#2C384B] bg-[#1C2431]"
           }`}
         >
-          <div className="shrink-0 rounded-sm bg-[#141A23] border border-[#2C384B] px-3 py-2 font-mono text-base font-bold text-[#93C5FD] tabular-data">
+          <div className={`shrink-0 rounded-sm bg-[#141A23] border border-[#2C384B] px-3 py-1.5 font-mono font-bold text-[#93C5FD] tabular-data ${emphasisCls}`}>
             {active.raw}
           </div>
-          <div className="text-xs leading-relaxed text-[#FAF8F3]">
+          <div className={`leading-relaxed text-[#FAF8F3] ${bodyCls}`}>
             {active.meaning}
           </div>
         </div>
@@ -632,9 +642,9 @@ export default function SlideInteractiveLab({
       );
     };
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
-          <span className="text-xs font-semibold text-[#CBD5E1]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+          <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Phòng thí nghiệm 1 Byte = 8 bit (Bấm từng bit 0/1 để ghép kí tự):
           </span>
           <div className="flex items-center gap-1.5">
@@ -643,14 +653,14 @@ export default function SlideInteractiveLab({
                 key={ch}
                 type="button"
                 onClick={() => setBytePreset(ch)}
-                className="px-2 py-0.5 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-xs text-[#93C5FD]"
+                className={`px-2.5 py-0.5 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-[#93C5FD] ${subCls}`}
               >
                 &apos;{ch}&apos;
               </button>
             ))}
           </div>
         </div>
-        <div className="mt-3 grid grid-cols-8 gap-1.5">
+        <div className="mt-2.5 grid grid-cols-8 gap-1.5">
           {bits.map((b, idx) => (
             <button
               key={idx}
@@ -667,14 +677,14 @@ export default function SlideInteractiveLab({
                   : "border-[#2C384B] bg-[#1C2431] text-[#94A3B8] hover:border-[#475569]"
               }`}
             >
-              <div className="text-base font-bold tabular-data">{b}</div>
-              <div className="text-[10px] opacity-80 tabular-data">
+              <div className={`font-bold tabular-data ${emphasisCls}`}>{b}</div>
+              <div className="text-[11px] opacity-80 tabular-data">
                 2^{7 - idx}
               </div>
             </button>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-3 gap-2 rounded-sm border border-[#2C384B] bg-[#1C2431] p-2.5 text-xs">
+        <div className={`mt-2.5 grid grid-cols-3 gap-2 rounded-sm border border-[#2C384B] bg-[#1C2431] p-2.5 ${bodyCls}`}>
           <div>
             <span className="text-[#94A3B8]">Dãy 8 bit: </span>
             <span className="font-mono font-semibold text-[#93C5FD] tabular-data">
@@ -702,8 +712,8 @@ export default function SlideInteractiveLab({
   if (widgetType === "unit-ladder") {
     const selected = STORAGE_UNITS_TABLE[unitIdx];
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="text-xs font-semibold text-[#CBD5E1] mb-2">
+      <div className={boxCls}>
+        <div className={`font-semibold text-[#CBD5E1] mb-2 ${labelCls}`}>
           Chọn đơn vị trên Bảng 1.1 (mỗi bậc tăng 2^10 = 1024 lần):
         </div>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5">
@@ -712,7 +722,7 @@ export default function SlideInteractiveLab({
               key={row.symbol}
               type="button"
               onClick={() => setUnitIdx(idx)}
-              className={`py-1.5 px-1 rounded-sm font-mono text-xs font-semibold transition-colors ${
+              className={`py-1.5 px-1 rounded-sm font-mono font-semibold transition-colors ${subCls} ${
                 unitIdx === idx
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -722,21 +732,21 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2.5 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3 text-xs">
+        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3 ${bodyCls}`}>
           <div>
-            <div className="text-[#94A3B8]">Tên & Kí hiệu</div>
+            <div className={`text-[#94A3B8] ${subCls}`}>Tên & Kí hiệu</div>
             <div className="mt-0.5 font-semibold text-[#FAF8F3]">
               {selected.unit} ({selected.symbol})
             </div>
           </div>
           <div>
-            <div className="text-[#94A3B8]">Lượng dữ liệu chuẩn SGK</div>
+            <div className={`text-[#94A3B8] ${subCls}`}>Lượng dữ liệu chuẩn SGK</div>
             <div className="mt-0.5 font-mono text-[#93C5FD] tabular-data">
               {selected.factorLabel} ({selected.bytesPowerLabel})
             </div>
           </div>
           <div>
-            <div className="text-[#94A3B8]">Ví dụ thực tế</div>
+            <div className={`text-[#94A3B8] ${subCls}`}>Ví dụ thực tế</div>
             <div className="mt-0.5 text-[#FAF8F3]">{selected.example}</div>
           </div>
         </div>
@@ -764,9 +774,9 @@ export default function SlideInteractiveLab({
         : `${safeVal.toLocaleString("vi-VN")} GB × 1024 × 1024 = ${kbResult.toLocaleString("vi-VN")} KB`;
 
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
-          <span className="text-xs font-semibold text-[#CBD5E1]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+          <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Giải nhanh Câu hỏi 2 (Trang 8) hoặc tự nhập số bất kì:
           </span>
           <div className="flex flex-wrap gap-1.5">
@@ -776,7 +786,7 @@ export default function SlideInteractiveLab({
                 setConvVal(3);
                 setConvUnit("MB");
               }}
-              className="px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-xs text-[#93C5FD]"
+              className={`px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-[#93C5FD] ${subCls}`}
             >
               a) 3 MB
             </button>
@@ -786,7 +796,7 @@ export default function SlideInteractiveLab({
                 setConvVal(2);
                 setConvUnit("GB");
               }}
-              className="px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-xs text-[#93C5FD]"
+              className={`px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-[#93C5FD] ${subCls}`}
             >
               b) 2 GB
             </button>
@@ -796,20 +806,20 @@ export default function SlideInteractiveLab({
                 setConvVal(2048);
                 setConvUnit("B");
               }}
-              className="px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-xs text-[#93C5FD]"
+              className={`px-2.5 py-1 rounded-sm border border-[#2C384B] bg-[#1C2431] hover:border-[#3B82F6] font-mono text-[#93C5FD] ${subCls}`}
             >
               c) 2048 B
             </button>
           </div>
         </div>
-        <div className="mt-3 flex flex-wrap items-center gap-3">
+        <div className="mt-2.5 flex flex-wrap items-center gap-3">
           <input
             type="number"
             min={0}
             aria-label="Giá trị cần đổi sang KB"
             value={convVal}
             onChange={(e) => setConvVal(Number(e.target.value))}
-            className="w-28 rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1.5 font-mono text-xs text-[#FAF8F3] tabular-data"
+            className={`w-28 rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1.5 font-mono text-[#FAF8F3] tabular-data ${bodyCls}`}
           />
           <select
             aria-label="Đơn vị đầu vào"
@@ -817,14 +827,14 @@ export default function SlideInteractiveLab({
             onChange={(e) =>
               setConvUnit(e.target.value as "B" | "KB" | "MB" | "GB")
             }
-            className="rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1.5 font-mono text-xs text-[#FAF8F3]"
+            className={`rounded-sm border border-[#3B4B63] bg-[#1C2431] px-2.5 py-1.5 font-mono text-[#FAF8F3] ${bodyCls}`}
           >
             <option value="B">Byte (B)</option>
             <option value="KB">Kilobyte (KB)</option>
             <option value="MB">Megabyte (MB)</option>
             <option value="GB">Gigabyte (GB)</option>
           </select>
-          <div className="flex-1 min-w-[200px] rounded-sm border border-[#16A34A]/60 bg-[#052E16]/40 px-3 py-1.5 font-mono text-xs text-[#DCFCE7] tabular-data">
+          <div className={`flex-1 min-w-[200px] rounded-sm border border-[#16A34A]/60 bg-[#052E16]/40 px-3 py-1.5 font-mono text-[#DCFCE7] tabular-data ${bodyCls}`}>
             {formulaText}
           </div>
         </div>
@@ -839,10 +849,10 @@ export default function SlideInteractiveLab({
     const fits256 = totalGb <= 256;
     const fillPct = Math.min(100, (totalGb / 256) * 100);
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
+      <div className={boxCls}>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
-            <div className="flex justify-between text-xs text-[#CBD5E1]">
+            <div className={`flex justify-between text-[#CBD5E1] ${bodyCls}`}>
               <span>Số lượng sách thư viện</span>
               <span className="font-mono font-bold text-[#93C5FD] tabular-data">
                 {bookCount.toLocaleString("vi-VN")} cuốn
@@ -860,7 +870,7 @@ export default function SlideInteractiveLab({
             />
           </div>
           <div>
-            <div className="flex justify-between text-xs text-[#CBD5E1]">
+            <div className={`flex justify-between text-[#CBD5E1] ${bodyCls}`}>
               <span>Dung lượng mỗi cuốn sách</span>
               <span className="font-mono font-bold text-[#93C5FD] tabular-data">
                 {mbPerBook} MB
@@ -878,8 +888,8 @@ export default function SlideInteractiveLab({
             />
           </div>
         </div>
-        <div className="mt-3 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+        <div className="mt-2.5 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
+          <div className={`flex flex-wrap items-center justify-between gap-2 ${bodyCls}`}>
             <span className="font-mono text-[#FAF8F3] tabular-data">
               Tổng: {totalMb.toLocaleString("vi-VN")} MB ≈{" "}
               <strong className="text-[#93C5FD]">
@@ -913,14 +923,14 @@ export default function SlideInteractiveLab({
   if (widgetType === "device-activity-2") {
     const pair = DEVICE_PAIRS[devicePairIdx];
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap gap-2 pb-2.5 border-b border-[#2C384B]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap gap-2 pb-2 border-b border-[#2C384B]">
           {DEVICE_PAIRS.map((p, idx) => (
             <button
               key={p.id}
               type="button"
               onClick={() => setDevicePairIdx(idx)}
-              className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
                 devicePairIdx === idx
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -930,16 +940,16 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2.5">
+        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2.5 ${bodyCls}`}>
+          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
             <div className="font-semibold text-[#93C5FD]">Điểm giống nhau</div>
             <p className="mt-1 text-[#FAF8F3] leading-relaxed">{pair.common}</p>
           </div>
-          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2.5">
+          <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
             <div className="font-semibold text-[#FCD34D]">Thiết bị thường</div>
             <p className="mt-1 text-[#CBD5E1] leading-relaxed">{pair.manual}</p>
           </div>
-          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-2.5">
+          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-3">
             <div className="font-semibold text-[#86EFAC]">Thiết bị số</div>
             <p className="mt-1 text-[#FAF8F3] leading-relaxed">{pair.digital}</p>
           </div>
@@ -952,14 +962,14 @@ export default function SlideInteractiveLab({
   if (widgetType === "device-comparison") {
     const active = COMPARISON_ASPECTS.find((a) => a.id === compAspect)!;
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap gap-2 pb-2.5 border-b border-[#2C384B]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap gap-2 pb-2 border-b border-[#2C384B]">
           {COMPARISON_ASPECTS.map((a) => (
             <button
               key={a.id}
               type="button"
               onClick={() => setCompAspect(a.id)}
-              className={`px-2.5 py-1.5 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
                 compAspect === a.id
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -969,7 +979,7 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-3 ${bodyCls}`}>
           <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
             <div className="font-semibold text-[#FCD34D]">
               {active.manualTitle}
@@ -1019,8 +1029,8 @@ export default function SlideInteractiveLab({
       .sort((a, b) => b.val - a.val);
 
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="text-xs font-semibold text-[#CBD5E1] mb-2">
+      <div className={boxCls}>
+        <div className={`font-semibold text-[#CBD5E1] mb-2 ${labelCls}`}>
           Thử chỉnh điểm dữ liệu đầu vào để xem 3 bước xử lí tạo ra thông tin:
         </div>
         <div className="grid grid-cols-5 gap-2">
@@ -1029,7 +1039,7 @@ export default function SlideInteractiveLab({
               key={item.key}
               className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-2 text-center block"
             >
-              <span className="block text-[11px] text-[#94A3B8]">
+              <span className={`block text-[#94A3B8] ${subCls}`}>
                 {item.label}
               </span>
               <input
@@ -1042,12 +1052,12 @@ export default function SlideInteractiveLab({
                   const v = Math.min(10, Math.max(0, Number(e.target.value)));
                   setScores((prev) => ({ ...prev, [item.key]: v }));
                 }}
-                className="mt-1 w-full rounded-sm border border-[#3B4B63] bg-[#141A23] py-1 text-center font-mono text-xs font-bold text-[#FAF8F3] tabular-data"
+                className={`mt-1 w-full rounded-sm border border-[#3B4B63] bg-[#141A23] py-1 text-center font-mono font-bold text-[#FAF8F3] tabular-data ${bodyCls}`}
               />
             </label>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2 rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-2.5 text-xs">
+        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-3 gap-2 rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-2.5 ${bodyCls}`}>
           <div>
             <span className="text-[#94A3B8]">ĐTB xử lí: </span>
             <span className="font-mono font-bold text-[#86EFAC] tabular-data">
@@ -1074,9 +1084,9 @@ export default function SlideInteractiveLab({
     const totalKb = sdCapacityGb * 1024 * 1024;
     const maxPhotos = Math.floor(totalKb / avgPhotoKb);
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
-          <span className="text-xs font-semibold text-[#CBD5E1]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+          <span className={`font-semibold text-[#CBD5E1] ${labelCls}`}>
             Hình 1.3 (438, 585, 418, 741 KB → TB 545,5 KB) — Chọn thẻ nhớ:
           </span>
           <div className="flex gap-1.5">
@@ -1085,7 +1095,7 @@ export default function SlideInteractiveLab({
                 key={gb}
                 type="button"
                 onClick={() => setSdCapacityGb(gb)}
-                className={`px-2.5 py-1 rounded-sm font-mono text-xs font-semibold transition-colors ${
+                className={`px-3 py-1 rounded-sm font-mono font-semibold transition-colors ${subCls} ${
                   sdCapacityGb === gb
                     ? "bg-[#1D4ED8] text-[#FAF8F3]"
                     : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1]"
@@ -1096,9 +1106,9 @@ export default function SlideInteractiveLab({
             ))}
           </div>
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+        <div className="mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
           <div>
-            <div className="flex justify-between text-xs text-[#CBD5E1]">
+            <div className={`flex justify-between text-[#CBD5E1] ${bodyCls}`}>
               <span>Độ lớn trung bình 1 ảnh</span>
               <span className="font-mono font-bold text-[#93C5FD] tabular-data">
                 {avgPhotoKb} KB
@@ -1120,16 +1130,16 @@ export default function SlideInteractiveLab({
                 setSdCapacityGb(16);
                 setAvgPhotoKb(545.5);
               }}
-              className="mt-1 text-[11px] text-[#93C5FD] underline hover:text-[#BFDBFE]"
+              className={`mt-1 text-[#93C5FD] underline hover:text-[#BFDBFE] ${subCls}`}
             >
               Khôi phục số liệu chuẩn SGK (16 GB / 545,5 KB)
             </button>
           </div>
-          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-3 text-xs space-y-1">
-            <div className="font-mono text-[#CBD5E1] tabular-data">
+          <div className="rounded-sm border border-[#16A34A]/60 bg-[#052E16]/35 p-3 space-y-1">
+            <div className={`font-mono text-[#CBD5E1] tabular-data ${subCls}`}>
               {sdCapacityGb} GB = {totalKb.toLocaleString("vi-VN")} KB
             </div>
-            <div className="text-sm font-bold text-[#86EFAC] tabular-data">
+            <div className={`font-bold text-[#86EFAC] tabular-data ${emphasisCls}`}>
               Chứa tối đa: {maxPhotos.toLocaleString("vi-VN")} ảnh
             </div>
           </div>
@@ -1162,8 +1172,8 @@ export default function SlideInteractiveLab({
     };
     const active = layers[cccdLayer];
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap gap-2 pb-2.5 border-b border-[#2C384B]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap gap-2 pb-2 border-b border-[#2C384B]">
           {[
             { id: "print" as const, label: "1. Chữ in trên thẻ" },
             { id: "qr" as const, label: "2. Quét mã QR" },
@@ -1173,7 +1183,7 @@ export default function SlideInteractiveLab({
               key={btn.id}
               type="button"
               onClick={() => setCccdLayer(btn.id)}
-              className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
                 cccdLayer === btn.id
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1] hover:border-[#475569]"
@@ -1183,9 +1193,9 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className="mt-3 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3 text-xs space-y-1.5">
+        <div className={`mt-2.5 rounded-sm border border-[#2C384B] bg-[#1C2431] p-3 space-y-1.5 ${bodyCls}`}>
           <div className="font-semibold text-[#93C5FD]">{active.title}</div>
-          <div className="rounded-sm bg-[#141A23] px-2.5 py-1.5 font-mono text-[11px] text-[#86EFAC]">
+          <div className={`rounded-sm bg-[#141A23] px-2.5 py-1.5 font-mono text-[#86EFAC] ${subCls}`}>
             {active.data}
           </div>
           <div className="text-[#FAF8F3] leading-relaxed">
@@ -1222,8 +1232,8 @@ export default function SlideInteractiveLab({
     };
     const current = items[photoTab];
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap gap-2 pb-2.5 border-b border-[#2C384B]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap gap-2 pb-2 border-b border-[#2C384B]">
           {[
             { id: "storage" as const, label: "Lưu trữ" },
             { id: "preview" as const, label: "Xem lại" },
@@ -1234,7 +1244,7 @@ export default function SlideInteractiveLab({
               key={t.id}
               type="button"
               onClick={() => setPhotoTab(t.id)}
-              className={`px-3 py-1.5 rounded-sm text-xs font-medium transition-colors ${
+              className={`px-3 py-1.5 rounded-sm font-medium transition-colors ${subCls} ${
                 photoTab === t.id
                   ? "bg-[#1D4ED8] text-[#FAF8F3]"
                   : "bg-[#1C2431] border border-[#2C384B] text-[#CBD5E1]"
@@ -1244,7 +1254,7 @@ export default function SlideInteractiveLab({
             </button>
           ))}
         </div>
-        <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+        <div className={`mt-2.5 grid grid-cols-1 sm:grid-cols-2 gap-2.5 ${bodyCls}`}>
           <div className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3">
             <div className="font-semibold text-[#FCD34D]">
               Máy ảnh phim truyền thống — {current.label}
@@ -1270,13 +1280,13 @@ export default function SlideInteractiveLab({
     ).length;
 
     return (
-      <div className="mt-4 rounded-sm border border-[#2C384B] bg-[#141A23] p-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-[#2C384B]">
-          <div className="text-xs font-semibold text-[#FAF8F3]">
+      <div className={boxCls}>
+        <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[#2C384B]">
+          <div className={`font-semibold text-[#FAF8F3] ${labelCls}`}>
             Kiểm tra nhanh 5 câu trắc nghiệm Bài 1
           </div>
           <div className="flex items-center gap-3">
-            <span className="font-mono text-xs text-[#86EFAC] tabular-data">
+            <span className={`font-mono text-[#86EFAC] tabular-data ${subCls}`}>
               Đúng: {correctCount}/{LESSON_1_QUIZ_QUESTIONS.length} (Đã làm{" "}
               {answeredCount})
             </span>
@@ -1284,7 +1294,7 @@ export default function SlideInteractiveLab({
               <button
                 type="button"
                 onClick={() => setQuizAnswers({})}
-                className="inline-flex items-center gap-1 text-xs text-[#93C5FD] hover:underline"
+                className={`inline-flex items-center gap-1 text-[#93C5FD] hover:underline ${subCls}`}
               >
                 <RotateCcwIcon className="w-3.5 h-3.5" />
                 Làm lại
@@ -1293,7 +1303,7 @@ export default function SlideInteractiveLab({
           </div>
         </div>
 
-        <div className="mt-3 space-y-3 max-h-[250px] overflow-y-auto pr-1">
+        <div className="mt-2.5 space-y-2.5 max-h-[260px] overflow-y-auto pr-1">
           {LESSON_1_QUIZ_QUESTIONS.map((q, qIdx) => {
             const chosen = quizAnswers[q.id];
             const hasChosen = chosen !== undefined;
@@ -1302,7 +1312,7 @@ export default function SlideInteractiveLab({
                 key={q.id}
                 className="rounded-sm border border-[#2C384B] bg-[#1C2431] p-3"
               >
-                <div className="text-xs font-semibold text-[#FAF8F3]">
+                <div className={`font-semibold text-[#FAF8F3] ${bodyCls}`}>
                   Câu {qIdx + 1}: {q.question}
                 </div>
                 <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-1.5">
@@ -1330,7 +1340,7 @@ export default function SlideInteractiveLab({
                             [q.id]: oIdx,
                           }))
                         }
-                        className={`flex items-start gap-2 rounded-sm border px-2.5 py-1.5 text-left text-[11px] transition-colors ${cls}`}
+                        className={`flex items-start gap-2 rounded-sm border px-2.5 py-1.5 text-left transition-colors ${subCls} ${cls}`}
                       >
                         <span className="font-mono font-bold shrink-0">
                           {String.fromCharCode(65 + oIdx)}.
@@ -1341,8 +1351,8 @@ export default function SlideInteractiveLab({
                   })}
                 </div>
                 {hasChosen && (
-                  <div className="mt-2 flex items-start gap-1.5 text-[11px] text-[#86EFAC]">
-                    <CheckCircleIcon className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                  <div className={`mt-2 flex items-start gap-1.5 text-[#86EFAC] ${subCls}`}>
+                    <CheckCircleIcon className="w-4 h-4 shrink-0 mt-0.5" />
                     <span>{q.explanation}</span>
                   </div>
                 )}

@@ -8,6 +8,7 @@ import {
 } from "./data/curriculum";
 import SlideStage from "./components/SlideStage";
 import StudyWorkbenchPanel from "./components/StudyWorkbenchPanel";
+import { useAutoNarrate } from "./hooks/useAutoNarrate";
 import {
   ArrowRightIcon,
   BinaryIcon,
@@ -42,15 +43,6 @@ export default function Home() {
   );
   const activeSlide = activeDeck.slides[safeSlideIndex];
 
-  const handleSelectDeck = useCallback((deckId: string) => {
-    setActiveDeckId(deckId);
-    setSlideIndex(0);
-    setIsGridOpen(false);
-    if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-  }, []);
-
   const handlePrevSlide = useCallback(() => {
     setSlideIndex((prev) => Math.max(0, prev - 1));
   }, []);
@@ -60,6 +52,27 @@ export default function Home() {
       Math.min(activeDeck.slides.length - 1, prev + 1)
     );
   }, [activeDeck.slides.length]);
+
+  const narration = useAutoNarrate({
+    slide: activeSlide,
+    slideIndex: safeSlideIndex,
+    totalSlides: activeDeck.slides.length,
+    onAdvanceSlide: handleNextSlide,
+  });
+  const { stop: stopNarration, togglePlayPause: toggleNarration } = narration;
+
+  const handleSelectDeck = useCallback(
+    (deckId: string) => {
+      stopNarration();
+      setActiveDeckId(deckId);
+      setSlideIndex(0);
+      setIsGridOpen(false);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    },
+    [stopNarration]
+  );
 
   const enterFullscreen = useCallback(async () => {
     setIsFullscreen(true);
@@ -132,6 +145,9 @@ export default function Home() {
       } else if (e.key === "g" || e.key === "G") {
         e.preventDefault();
         setIsGridOpen((prev) => !prev);
+      } else if (e.key === "n" || e.key === "N") {
+        e.preventDefault();
+        toggleNarration();
       } else if (e.key === "Escape") {
         if (document.querySelector('[role="dialog"]')) {
           return;
@@ -153,6 +169,7 @@ export default function Home() {
     handleToggleFullscreen,
     isFullscreen,
     isGridOpen,
+    toggleNarration,
   ]);
 
   const filteredDecks = useMemo(() => {
@@ -258,7 +275,7 @@ export default function Home() {
         className={
           isFullscreen
             ? "flex-1 w-full"
-            : "flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-6 py-4 space-y-8"
+            : "flex-1 max-w-[1440px] w-full mx-auto px-2 sm:px-3.5 py-2.5 space-y-5"
         }
       >
         {/* Active Deck Context Strip */}
@@ -267,7 +284,7 @@ export default function Home() {
           className={
             isFullscreen
               ? "hidden"
-              : "flex flex-wrap items-center justify-between gap-3 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] px-4 py-2.5"
+              : "flex flex-wrap items-center justify-between gap-3 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] px-3.5 py-2"
           }
         >
           <div className="flex flex-wrap items-center gap-2.5 min-w-0">
@@ -299,7 +316,7 @@ export default function Home() {
           className={
             isFullscreen
               ? "w-full h-full"
-              : "grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch"
+              : "grid grid-cols-1 lg:grid-cols-12 gap-3 items-stretch"
           }
         >
           <div className={isFullscreen ? "w-full h-full" : "lg:col-span-8 flex flex-col"}>
@@ -309,6 +326,7 @@ export default function Home() {
               activeSlide={activeSlide}
               isFullscreen={isFullscreen}
               isGridOpen={isGridOpen}
+              narration={narration}
               onSelectSlide={(idx) => setSlideIndex(idx)}
               onPrevSlide={handlePrevSlide}
               onNextSlide={handleNextSlide}
@@ -327,6 +345,7 @@ export default function Home() {
             <StudyWorkbenchPanel
               activeDeck={activeDeck}
               activeSlide={activeSlide}
+              narration={narration}
               onSelectSlide={(idx) => {
                 setSlideIndex(idx);
                 setIsGridOpen(false);
@@ -645,7 +664,9 @@ export default function Home() {
             Kho Thuyết Trình Tin Học Phổ Thông (Tiểu học · THCS · THPT) — Định hướng Kết nối tri thức với cuộc sống (SGK Mới 2026)
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <span>Phím điều khiển: Trái / Phải, F (Toàn màn hình), G (Lưới slide)</span>
+            <span>
+              Phím điều khiển: Trái / Phải, F (Toàn màn hình), G (Lưới slide), N (Thuyết minh)
+            </span>
             <span className="font-semibold text-[#1D4ED8]">
               Minh họa trực quan · Phòng Lab Bit/Byte &amp; Giải SGK
             </span>

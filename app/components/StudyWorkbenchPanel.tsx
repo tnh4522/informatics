@@ -8,26 +8,35 @@ import {
   SLIDE_CHAPTERS,
   SlideItem,
 } from "../data/curriculum";
+import { NarrationController } from "../hooks/useAutoNarrate";
 import {
   BookOpenIcon,
   CalculatorIcon,
   CheckCircleIcon,
   ImageIcon,
   LayersIcon,
+  PauseIcon,
+  PlayIcon,
+  StopSquareIcon,
+  VolumeIcon,
 } from "./Icons";
 
 interface StudyWorkbenchPanelProps {
   activeDeck: PresentationDeck;
   activeSlide: SlideItem;
+  narration: NarrationController;
   onSelectSlide: (slideIndex: number) => void;
   onSelectDeck: (deckId: string) => void;
 }
 
 type WorkbenchTab = "outline" | "bitlab" | "notes" | "catalog";
 
+const NARRATION_SPEEDS = [0.85, 1.0, 1.25, 1.5] as const;
+
 export default function StudyWorkbenchPanel({
   activeDeck,
   activeSlide,
+  narration,
   onSelectSlide,
   onSelectDeck,
 }: StudyWorkbenchPanelProps) {
@@ -180,6 +189,203 @@ export default function StudyWorkbenchPanel({
                 <div className="pt-1.5 border-t border-[#E5E0D4] text-xs leading-relaxed text-[#3E4856]">
                   <strong className="text-[#141A23]">Ghi chú tự học:</strong>{" "}
                   {activeSlide.speakerNotes}
+                </div>
+              </div>
+            </div>
+
+            {/* Auto-Narrate Studio Panel (Tiếng Việt) */}
+            <div className="rounded-sm border border-[#D5CFC0] bg-[#FFFFFF] p-3 space-y-2.5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <VolumeIcon className="w-4 h-4 text-[#1D4ED8] shrink-0" />
+                  <h3 className="text-xs font-bold text-[#141A23]">
+                    Thuyết minh tự động (Tiếng Việt)
+                  </h3>
+                </div>
+                <span
+                  className={`px-1.5 py-0.5 rounded-sm font-mono text-[10px] font-semibold tabular-data ${
+                    narration.isPlaying
+                      ? "bg-[#DCFCE7] text-[#15803D]"
+                      : narration.isPaused
+                      ? "bg-[#FEF3C7] text-[#92400E]"
+                      : narration.hasVietnameseVoice
+                      ? "bg-[#DBEAFE] text-[#1E3A8A]"
+                      : "bg-[#ECE7DB] text-[#3E4856]"
+                  }`}
+                >
+                  {narration.isPlaying
+                    ? `Đang đọc · ${narration.currentSegmentIndex + 1}/${narration.segments.length}`
+                    : narration.isPaused
+                    ? `Tạm dừng · ${narration.currentSegmentIndex + 1}/${narration.segments.length}`
+                    : narration.hasVietnameseVoice
+                    ? "Giọng vi-VN sẵn sàng"
+                    : "Chế độ phụ đề tự động"}
+                </span>
+              </div>
+
+              <div className="flex flex-wrap items-center justify-between gap-1.5">
+                <div className="flex items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={narration.togglePlayPause}
+                    className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-sm bg-[#1D4ED8] hover:bg-[#1E40AF] text-xs font-semibold text-[#FAF8F3] transition-colors"
+                  >
+                    {narration.isPlaying ? (
+                      <>
+                        <PauseIcon className="w-3.5 h-3.5" />
+                        <span>Tạm dừng</span>
+                      </>
+                    ) : narration.isPaused ? (
+                      <>
+                        <PlayIcon className="w-3.5 h-3.5" />
+                        <span>Tiếp tục</span>
+                      </>
+                    ) : (
+                      <>
+                        <PlayIcon className="w-3.5 h-3.5" />
+                        <span>Nghe bài giảng</span>
+                      </>
+                    )}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={narration.stop}
+                    disabled={!narration.isActive}
+                    aria-label="Dừng thuyết minh"
+                    className="inline-flex items-center gap-1 px-2 py-1.5 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] text-xs font-semibold text-[#3E4856] hover:text-[#141A23] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <StopSquareIcon className="w-3.5 h-3.5" />
+                    <span>Dừng</span>
+                  </button>
+                </div>
+
+                <div
+                  role="group"
+                  aria-label="Tốc độ thuyết minh"
+                  className="inline-flex rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] p-0.5 gap-0.5"
+                >
+                  {NARRATION_SPEEDS.map((spd) => {
+                    const selected = Math.abs(narration.rate - spd) < 0.05;
+                    return (
+                      <button
+                        key={spd}
+                        type="button"
+                        onClick={() => narration.setRate(spd)}
+                        className={`px-1.5 py-0.5 rounded-sm font-mono text-[10px] font-semibold tabular-data transition-colors ${
+                          selected
+                            ? "bg-[#141A23] text-[#FAF8F3]"
+                            : "text-[#3E4856] hover:text-[#141A23]"
+                        }`}
+                      >
+                        {spd}x
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap gap-x-3 gap-y-1.5 pt-1 border-t border-[#E5E0D4] text-[11px] text-[#3E4856]">
+                <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={narration.autoAdvance}
+                    onChange={(e) => narration.setAutoAdvance(e.target.checked)}
+                    className="accent-[#1D4ED8] rounded-sm"
+                  />
+                  <span className="font-medium text-[#141A23]">
+                    Tự chuyển slide
+                  </span>
+                </label>
+                <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={narration.includeSpeakerNotes}
+                    onChange={(e) =>
+                      narration.setIncludeSpeakerNotes(e.target.checked)
+                    }
+                    className="accent-[#1D4ED8] rounded-sm"
+                  />
+                  <span>Đọc ghi chú</span>
+                </label>
+                <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={narration.showCaptions}
+                    onChange={(e) =>
+                      narration.setShowCaptions(e.target.checked)
+                    }
+                    className="accent-[#1D4ED8] rounded-sm"
+                  />
+                  <span>Hiện phụ đề</span>
+                </label>
+              </div>
+
+              {narration.vietnameseVoices.length > 0 ? (
+                <div className="flex items-center gap-2">
+                  <label
+                    htmlFor="voice-select-vi"
+                    className="text-[11px] font-semibold text-[#5A6575] shrink-0"
+                  >
+                    Giọng đọc:
+                  </label>
+                  <select
+                    id="voice-select-vi"
+                    value={narration.selectedVoiceURI}
+                    onChange={(e) =>
+                      narration.setSelectedVoiceURI(e.target.value)
+                    }
+                    className="min-w-0 flex-1 rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] px-2 py-1 text-[11px] text-[#141A23]"
+                  >
+                    {narration.vietnameseVoices.map((v) => (
+                      <option key={v.voiceURI} value={v.voiceURI}>
+                        {v.name} ({v.lang})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <p className="rounded-sm border border-[#D5CFC0] bg-[#FAF8F3] px-2.5 py-1.5 text-[11px] leading-snug text-[#5A6575]">
+                  Trình duyệt chưa phát hiện giọng nói{" "}
+                  <code className="font-mono text-[#141A23]">vi-VN</code> trên
+                  hệ điều hành; chế độ{" "}
+                  <strong className="text-[#141A23]">Phụ đề tự động</strong>{" "}
+                  sẽ chạy từng câu và tự chuyển slide.
+                </p>
+              )}
+
+              {/* Kịch bản lời giảng slide hiện tại (bấm từng câu để nhảy đoạn đọc) */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-[11px] text-[#5A6575]">
+                  <span className="font-semibold text-[#141A23]">
+                    Kịch bản slide {String(activeSlide.id).padStart(2, "0")}
+                  </span>
+                  <span className="font-mono tabular-data">
+                    {narration.segments.length} đoạn (phím N)
+                  </span>
+                </div>
+                <div className="max-h-36 overflow-y-auto divide-y divide-[#E5E0D4] rounded-sm border border-[#D5CFC0] bg-[#FAF8F3]">
+                  {narration.segments.map((seg, idx) => {
+                    const isCurrentSeg =
+                      narration.isActive &&
+                      narration.currentSegmentIndex === idx;
+                    return (
+                      <button
+                        key={seg.id}
+                        type="button"
+                        onClick={() => narration.jumpToSegment(idx)}
+                        className={`w-full px-2.5 py-1.5 text-left text-[11px] leading-snug transition-colors ${
+                          isCurrentSeg
+                            ? "bg-[#DBEAFE] text-[#1E3A8A] font-semibold"
+                            : "text-[#3E4856] hover:bg-[#ECE7DB]"
+                        }`}
+                      >
+                        <span className="font-mono text-[10px] text-[#1D4ED8] mr-1.5 tabular-data">
+                          {String(idx + 1).padStart(2, "0")}.
+                        </span>
+                        <span>{seg.displayText}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             </div>
